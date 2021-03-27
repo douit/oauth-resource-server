@@ -6,12 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.rkc.zds.resource.dto.PhoneDto;
+import com.rkc.zds.resource.entity.PhoneEntity;
 
-public interface PhoneRepository extends JpaRepository<PhoneDto, Integer> {
+public interface PhoneRepository extends JpaRepository<PhoneEntity, Integer> {
   
-	Page<PhoneDto> findByContactId(Pageable pageable, int contactId);
+	Page<PhoneEntity> findByContactId(Pageable pageable, int contactId);
 
-	List<PhoneDto> findByContactId(int contactId);
+	List<PhoneEntity> findByContactId(int contactId);
 	       
 }

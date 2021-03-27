@@ -5,10 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import com.rkc.zds.resource.dto.GroupDto;
+import com.rkc.zds.resource.entity.GroupEntity;
 
-public interface GroupRepository extends JpaRepository<GroupDto, Integer>, JpaSpecificationExecutor<GroupDto> {
+public interface GroupRepository extends JpaRepository<GroupEntity, Integer>, JpaSpecificationExecutor<GroupEntity> {
   
-	Page<GroupDto> findByGroupNameLike(Pageable pageable, String groupName);
+	Page<GroupEntity> findByGroupNameLike(Pageable pageable, String groupName);
     
 }

@@ -25,9 +25,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rkc.zds.resource.dto.ContactDto;
 import com.rkc.zds.resource.dto.LoginDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ContactEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.service.AuthenticationService;
 import com.rkc.zds.resource.service.UserService;
 
@@ -43,12 +43,12 @@ public class RegistrationController {
     
     @RequestMapping(value = "/user/registration", method = RequestMethod.POST)
     @ResponseBody
-    public UserDto registerNewUser(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public UserEntity registerNewUser(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
 
-		UserDto userDto = new UserDto();
+		UserEntity userDto = new UserEntity();
 		try {
-			userDto = mapper.readValue(jsonString, UserDto.class);
+			userDto = mapper.readValue(jsonString, UserEntity.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,7 +62,7 @@ public class RegistrationController {
         //hack
         userDto.setLogin(userDto.getUserName());
         
-        final UserDto registered = userService.registerNewUserAccount(userDto);
+        final UserEntity registered = userService.registerNewUserAccount(userDto);
         //eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
         return registered;
     }

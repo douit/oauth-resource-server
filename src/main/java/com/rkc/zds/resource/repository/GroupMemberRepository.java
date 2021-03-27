@@ -6,12 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.rkc.zds.resource.dto.GroupMemberDto;
+import com.rkc.zds.resource.entity.GroupMemberEntity;
 
-public interface GroupMemberRepository extends JpaRepository<GroupMemberDto, Integer> {
+public interface GroupMemberRepository extends JpaRepository<GroupMemberEntity, Integer> {
   
-	Page<GroupMemberDto> findByGroupId(Pageable pageable, int groupId);
+	Page<GroupMemberEntity> findByGroupId(Pageable pageable, int groupId);
 
-	List<GroupMemberDto> findByGroupId(int groupId);
+	List<GroupMemberEntity> findByGroupId(int groupId);
 	       
 }

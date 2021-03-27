@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.dto;
+package com.rkc.zds.resource.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rkc.zds.resource.dto.Profile;
 
 /**
  * The persistent class for the PCM_USERS database table.
@@ -23,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name="PCM_USERS")
-public class UserDto implements java.io.Serializable  {
+public class UserEntity implements java.io.Serializable  {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -31,10 +32,10 @@ public class UserDto implements java.io.Serializable  {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-    public UserDto() {
+    public UserEntity() {
     }
     
-	public UserDto(String userName, String password, int enabled) {
+	public UserEntity(String userName, String password, int enabled) {
 		this.userName = userName;
 		this.password = password;
 		this.enabled = enabled;
@@ -75,11 +76,11 @@ public class UserDto implements java.io.Serializable  {
 	
 	@OneToMany(cascade = {CascadeType.ALL, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(nullable=true, name = "userName", referencedColumnName = "userName")
-	@ElementCollection(targetClass=AuthorityDto.class)
+	@ElementCollection(targetClass=AuthorityEntity.class)
 
     @JsonProperty("authorities")
 	//private Set<AuthorityDto> authorities = new HashSet<AuthorityDto>(0);
-    private List<AuthorityDto> authorities = new ArrayList<AuthorityDto>();
+    private List<AuthorityEntity> authorities = new ArrayList<AuthorityEntity>();
 
     @JsonIgnore
 	@Column(name="PUBLIC_SECRET")
@@ -196,12 +197,12 @@ public class UserDto implements java.io.Serializable  {
 	}
 */
     @JsonIgnore
-    public List<AuthorityDto> getAuthorities() {
+    public List<AuthorityEntity> getAuthorities() {
 		return authorities;
 	}
     
     @JsonIgnore
-	public void setAuthorities(List<AuthorityDto> authorities) {
+	public void setAuthorities(List<AuthorityEntity> authorities) {
 		this.authorities = authorities;
 	}
 

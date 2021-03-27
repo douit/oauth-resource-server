@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rkc.zds.resource.dto.ArticleDto;
-import com.rkc.zds.resource.dto.ArticleFavoriteDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ArticleEntity;
+import com.rkc.zds.resource.entity.ArticleFavoriteEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.ResourceNotFoundException;
 import com.rkc.zds.resource.model.ArticleData;
 import com.rkc.zds.resource.repository.ArticleFavoriteRepository;
@@ -56,19 +56,19 @@ public class ArticleFavoriteApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 
-		UserDto user = null;
+		UserEntity user = null;
 
 		if (userDto.isPresent()) {
 			user = userDto.get();
 		}
 
-		ArticleDto article = getArticle(id);
-		Optional<ArticleFavoriteDto> articleFavoriteTemp = articleFavoriteRepository
+		ArticleEntity article = getArticle(id);
+		Optional<ArticleFavoriteEntity> articleFavoriteTemp = articleFavoriteRepository
 				.findByArticleIdAndUserId(article.getId(), user.getId());
 		if (!articleFavoriteTemp.isPresent()) {
-			ArticleFavoriteDto articleFavorite = new ArticleFavoriteDto(article.getId(), user.getId());
+			ArticleFavoriteEntity articleFavorite = new ArticleFavoriteEntity(article.getId(), user.getId());
 			articleFavoriteRepository.save(articleFavorite);
 		}
 		return responseArticleData(articleQueryService.findById(id, user).get());
@@ -83,15 +83,15 @@ public class ArticleFavoriteApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 
-		UserDto user = null;
+		UserEntity user = null;
 
 		if (userDto.isPresent()) {
 			user = userDto.get();
 		}
 
-		ArticleDto article = getArticle(id);
+		ArticleEntity article = getArticle(id);
 		articleFavoriteRepository.findByArticleIdAndUserId(article.getId(), user.getId()).ifPresent(favorite -> {
 			articleFavoriteRepository.delete(favorite);
 		});
@@ -107,7 +107,7 @@ public class ArticleFavoriteApi {
 		});
 	}
 
-	private ArticleDto getArticle(Integer id) {
+	private ArticleEntity getArticle(Integer id) {
 		return articleRepository.findById(id).map(article -> article).orElseThrow(ResourceNotFoundException::new);
 	}
 }

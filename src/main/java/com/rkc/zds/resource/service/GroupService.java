@@ -4,24 +4,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.rkc.zds.resource.dto.GroupDto;
-import com.rkc.zds.resource.dto.GroupMemberDto;
+import com.rkc.zds.resource.entity.GroupEntity;
+import com.rkc.zds.resource.entity.GroupMemberEntity;
 
 public interface GroupService {
 
-    Page<GroupDto> findGroups(Pageable pageable);
+    Page<GroupEntity> findGroups(Pageable pageable);
 
-    Page<GroupDto> searchGroups(String name);
+    Page<GroupEntity> searchGroups(String name);
     
-	Page<GroupDto> searchGroups(Pageable pageable, Specification<GroupDto> spec);
+	Page<GroupEntity> searchGroups(Pageable pageable, Specification<GroupEntity> spec);
 
-    GroupDto getGroup(int id);    
+    GroupEntity getGroup(int id);    
 
-    Page<GroupMemberDto> findGroupMembers(int id); 
+    Page<GroupMemberEntity> findGroupMembers(int id); 
     
-    public void saveGroup(GroupDto group);
+    public void saveGroup(GroupEntity group);
 
-    public void updateGroup(GroupDto group);
+    public void updateGroup(GroupEntity group);
 
 	void deleteGroup(int id);
 

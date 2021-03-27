@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.dto;
+package com.rkc.zds.resource.entity;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Entity
 @Table(name = "PCM_AUTHORITIES", catalog = "pcm", uniqueConstraints = @UniqueConstraint(columnNames = { "AUTHORITY", "USERNAME" }))
-public class AuthorityDto implements Serializable {
+public class AuthorityEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -37,13 +37,13 @@ public class AuthorityDto implements Serializable {
 	
 	@ManyToOne(optional=true, fetch = FetchType.EAGER)	
 	@JsonIgnore
-	private UserDto user;
+	private UserEntity user;
 
-	private UserDto getUser() {
+	private UserEntity getUser() {
 		return this.user;
 	}
 	
-    private void setUser(UserDto userDto) {
+    private void setUser(UserEntity userDto) {
         this.user = userDto;
     }
     
@@ -56,10 +56,10 @@ public class AuthorityDto implements Serializable {
 	@JsonProperty("authority")
 	private String authority;
 
-    public AuthorityDto() {
+    public AuthorityEntity() {
     }
     
-    public AuthorityDto(String jsonString) {
+    public AuthorityEntity(String jsonString) {
     	System.out.println(jsonString);
     	StringBuilder sb = new StringBuilder(jsonString);
     	sb.deleteCharAt(0);
@@ -67,9 +67,9 @@ public class AuthorityDto implements Serializable {
     	sb.deleteCharAt(len-2);
     	String result = sb.toString();
 		ObjectMapper mapper = new ObjectMapper();
-		AuthorityDto authority = new AuthorityDto();
+		AuthorityEntity authority = new AuthorityEntity();
 		try {
-			authority = mapper.readValue(result, AuthorityDto.class);
+			authority = mapper.readValue(result, AuthorityEntity.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,7 +86,7 @@ public class AuthorityDto implements Serializable {
 		
     }
     
-	public AuthorityDto(String id, String userName, String authority) {
+	public AuthorityEntity(String id, String userName, String authority) {
 		this.id = Integer.parseInt(id);
 		this.userName = userName;
 		this.authority = authority;

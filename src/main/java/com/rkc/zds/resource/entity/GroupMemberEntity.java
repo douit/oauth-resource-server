@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.dto;
+package com.rkc.zds.resource.entity;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="PCM_GROUP_MEMBERS")
-public class GroupMemberDto implements Serializable {
+public class GroupMemberEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -29,7 +29,7 @@ public class GroupMemberDto implements Serializable {
 	@Column(name="CONTACT_ID")
 	private int contactId;
 
-    public GroupMemberDto() {
+    public GroupMemberEntity() {
     }
 
 	public int getId() {

@@ -30,10 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rkc.zds.resource.dto.ArticleDto;
-import com.rkc.zds.resource.dto.ArticleTagArticleDto;
-import com.rkc.zds.resource.dto.ArticleTagDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ArticleEntity;
+import com.rkc.zds.resource.entity.ArticleTagArticleEntity;
+import com.rkc.zds.resource.entity.ArticleTagEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.ArticleData;
 import com.rkc.zds.resource.model.ArticleDataList;
 import com.rkc.zds.resource.repository.ArticleRepository;
@@ -80,18 +80,18 @@ public class ArticlesApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 
-		ArticleDto article = new ArticleDto();
+		ArticleEntity article = new ArticleEntity();
 
 		ObjectMapper mapper = new ObjectMapper();
 
-		UserDto user = null;
+		UserEntity user = null;
 		if (userDto.isPresent()) {
 			user = userDto.get();
 
 			try {
-				article = mapper.readValue(jsonString, ArticleDto.class);
+				article = mapper.readValue(jsonString, ArticleEntity.class);
 			} catch (JsonParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -117,7 +117,7 @@ public class ArticlesApi {
 			}
 
 			final Integer articleId = article.getId();
-			final UserDto temp = user;
+			final UserEntity temp = user;
 
 			return ResponseEntity.ok(new HashMap<String, Object>() {
 				{
@@ -129,27 +129,27 @@ public class ArticlesApi {
 		return ResponseEntity.ok(HttpStatus.NO_CONTENT);
 	}
 
-	private void processTags(ArticleDto article) {
+	private void processTags(ArticleEntity article) {
 
 		String tags = article.getTags();
 		String[] array = tags.split("\\s+");
-		ArticleTagDto tagDto = null;
-		ArticleTagArticleDto tagArticleDto = null;
+		ArticleTagEntity tagDto = null;
+		ArticleTagArticleEntity tagArticleDto = null;
 
-		List<ArticleTagArticleDto> articleTagList = null;
+		List<ArticleTagArticleEntity> articleTagList = null;
 
 		for (String tag : array) {
 			if (!tag.equals("")) {
 				tagDto = tagRepository.findByName(tag);
 				if (tagDto == null) {
-					tagDto = new ArticleTagDto();
+					tagDto = new ArticleTagEntity();
 					tagDto.setName(tag);
 					tagDto = tagRepository.save(tagDto);
 				}
 				if (tagDto != null) {
 					tagArticleDto = tagArticleRepository.findByTagIdAndArticleId(tagDto.getId(), article.getId());
 					if (tagArticleDto == null) {
-						tagArticleDto = new ArticleTagArticleDto();
+						tagArticleDto = new ArticleTagArticleEntity();
 						tagArticleDto.setTagId(tagDto.getId());
 						tagArticleDto.setArticleId(article.getId());
 						tagArticleDto = tagArticleRepository.save(tagArticleDto);
@@ -174,9 +174,9 @@ public class ArticlesApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 
-		UserDto user = null;
+		UserEntity user = null;
 
 		if (userDto.isPresent()) {
 			user = userDto.get();
@@ -215,11 +215,11 @@ public class ArticlesApi {
 			user = userDto.get();
 		}
 */
-		Page<ArticleDto> pageList = null;
+		Page<ArticleEntity> pageList = null;
 		if (author != null) {
-			Optional<UserDto> authorDto = userRepository.findByUserName(author);
+			Optional<UserEntity> authorDto = userRepository.findByUserName(author);
 
-			UserDto authorDtoTemp = null;
+			UserEntity authorDtoTemp = null;
 
 			if (authorDto.isPresent()) {
 				authorDtoTemp = authorDto.get();
@@ -227,9 +227,9 @@ public class ArticlesApi {
 
 			pageList = articleReadService.findByUserId(pageable, authorDtoTemp.getId());
 		} else if (favoritedBy != null) {
-			Optional<UserDto> favoritedByDto = userRepository.findByUserName(favoritedBy);
+			Optional<UserEntity> favoritedByDto = userRepository.findByUserName(favoritedBy);
 
-			UserDto favoritedByTemp = null;
+			UserEntity favoritedByTemp = null;
 
 			if (favoritedByDto.isPresent()) {
 				favoritedByTemp = favoritedByDto.get();

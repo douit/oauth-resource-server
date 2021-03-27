@@ -13,11 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.rkc.zds.resource.dto.ArticleDto;
-import com.rkc.zds.resource.dto.ArticleFavoriteDto;
-import com.rkc.zds.resource.dto.ArticleTagArticleDto;
-import com.rkc.zds.resource.dto.ArticleTagDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ArticleEntity;
+import com.rkc.zds.resource.entity.ArticleFavoriteEntity;
+import com.rkc.zds.resource.entity.ArticleTagArticleEntity;
+import com.rkc.zds.resource.entity.ArticleTagEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.ArticleData;
 import com.rkc.zds.resource.model.ArticleDataList;
 import com.rkc.zds.resource.model.ProfileData;
@@ -53,11 +53,11 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 
 	@Override
 	public ArticleData findById(Integer id) {
-		Optional<ArticleDto> article = articleRepo.findById(id);
+		Optional<ArticleEntity> article = articleRepo.findById(id);
 
 		ArticleData data = null;
 		ProfileData profile = null;
-		ArticleDto articleDto = null;
+		ArticleEntity articleDto = null;
 
 		if (article.isPresent()) {
 			articleDto = article.get();
@@ -73,11 +73,11 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 			data.setSlug(articleDto.toSlug(articleDto.getTitle()));
 
 			// List<ArticleTagArticleDto> tagDtoList = articleDto.getTagList();
-			List<ArticleTagArticleDto> tagDtoList = articleTagArticleRepo.findByArticleId(articleDto.getId());
+			List<ArticleTagArticleEntity> tagDtoList = articleTagArticleRepo.findByArticleId(articleDto.getId());
 			List<String> tagList = new ArrayList<String>();
-			Optional<ArticleTagDto> tag = null;
-			ArticleTagDto tagDto = null;
-			for (ArticleTagArticleDto articleTag : tagDtoList) {
+			Optional<ArticleTagEntity> tag = null;
+			ArticleTagEntity tagDto = null;
+			for (ArticleTagArticleEntity articleTag : tagDtoList) {
 
 				tag = articleTagRepo.findById(articleTag.getTagId());
 
@@ -91,10 +91,10 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 
 			Integer userId = articleDto.getUserId();
 
-			Optional<UserDto> userDto = userRepo.findById(userId);
+			Optional<UserEntity> userDto = userRepo.findById(userId);
 
 			if (userDto.isPresent()) {
-				UserDto user = userDto.get();
+				UserEntity user = userDto.get();
 
 				profile = new ProfileData(user.getId(), user.getUserName(), user.getBio(), user.getImage(), true);
 
@@ -106,11 +106,11 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 
 	@Override
 	public ArticleData findBySlug(String slug) {
-		Optional<ArticleDto> article = articleRepo.findBySlug(slug);
+		Optional<ArticleEntity> article = articleRepo.findBySlug(slug);
 
 		ArticleData data = null;
 		ProfileData profile = null;
-		ArticleDto articleDto = null;
+		ArticleEntity articleDto = null;
 
 		if (article.isPresent()) {
 			articleDto = article.get();
@@ -125,12 +125,12 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 			data.setFavorited(false);
 			data.setSlug(articleDto.toSlug(articleDto.getTitle()));
 
-			List<ArticleTagArticleDto> tagDtoList = articleTagArticleRepo.findByArticleId(articleDto.getId());
+			List<ArticleTagArticleEntity> tagDtoList = articleTagArticleRepo.findByArticleId(articleDto.getId());
 
 			List<String> tagList = new ArrayList<String>();
-			Optional<ArticleTagDto> tag = null;
-			ArticleTagDto tagDto = null;
-			for (ArticleTagArticleDto articleTag : tagDtoList) {
+			Optional<ArticleTagEntity> tag = null;
+			ArticleTagEntity tagDto = null;
+			for (ArticleTagArticleEntity articleTag : tagDtoList) {
 
 				tag = articleTagRepo.findById(articleTag.getTagId());
 
@@ -144,10 +144,10 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 
 			Integer userId = articleDto.getUserId();
 
-			Optional<UserDto> userDto = userRepo.findById(userId);
+			Optional<UserEntity> userDto = userRepo.findById(userId);
 
 			if (userDto.isPresent()) {
-				UserDto user = userDto.get();
+				UserEntity user = userDto.get();
 
 				profile = new ProfileData(user.getId(), user.getUserName(), user.getBio(), user.getImage(), true);
 
@@ -163,28 +163,28 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 		List<String> list = new ArrayList<String>();
 
 		if (tag != null) {
-			ArticleTagDto tagDto = articleTagRepo.findByName(tag);
-			List<ArticleTagArticleDto> articles = null;
+			ArticleTagEntity tagDto = articleTagRepo.findByName(tag);
+			List<ArticleTagArticleEntity> articles = null;
 
 			if (tagDto != null) {
 				articles = articleTagArticleRepo.findByTagId(tagDto.getId());
-				for (ArticleTagArticleDto element : articles) {
+				for (ArticleTagArticleEntity element : articles) {
 					list.add(element.getArticleId().toString());
 				}
 				return list;
 			}
 		}
 
-		List<ArticleDto> articleDtoList = null;
-		UserDto userDto = null;
+		List<ArticleEntity> articleDtoList = null;
+		UserEntity userDto = null;
 		if (author != null) {
-			Optional<UserDto> userDtoTemp = userRepo.findByUserName(author);
+			Optional<UserEntity> userDtoTemp = userRepo.findByUserName(author);
 			if (userDtoTemp.isPresent()) {
 				userDto = userDtoTemp.get();
 
 				articleDtoList = articleRepo.findByUserId(userDto.getId());
 
-				for (ArticleDto article : articleDtoList) {
+				for (ArticleEntity article : articleDtoList) {
 
 					list.add(article.getId().toString());
 
@@ -194,15 +194,15 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 			}
 		}
 
-		List<ArticleFavoriteDto> favoriteList = null;
+		List<ArticleFavoriteEntity> favoriteList = null;
 		if (favoritedBy != null) {
-			Optional<UserDto> userDtoTemp = userRepo.findByUserName(favoritedBy);
+			Optional<UserEntity> userDtoTemp = userRepo.findByUserName(favoritedBy);
 			if (userDtoTemp.isPresent()) {
 				userDto = userDtoTemp.get();
 
 				favoriteList = articleFavoriteRepo.findByUserId(userDto.getId());
 
-				for (ArticleFavoriteDto favorite : favoriteList) {
+				for (ArticleFavoriteEntity favorite : favoriteList) {
 
 					list.add(favorite.getArticleId().toString());
 
@@ -214,18 +214,18 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 
 		}
 
-		Page<ArticleDto> page = articleRepo.findAll(pageable);
+		Page<ArticleEntity> page = articleRepo.findAll(pageable);
 
 		articleDtoList = page.getContent();
 
-		for (ArticleDto element : articleDtoList) {
+		for (ArticleEntity element : articleDtoList) {
 			list.add(element.getId().toString());
 		}
 
 		return list;
 	}
 
-	public Page<ArticleDto> searchArticles(Pageable pageable, Specification<ArticleDto> spec) {
+	public Page<ArticleEntity> searchArticles(Pageable pageable, Specification<ArticleEntity> spec) {
 		return articleRepo.findAll(spec, pageable);
 	}
 
@@ -242,9 +242,9 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 		ArticleData data = null;
 		ProfileData profile = null;
 
-		Optional<ArticleDto> articleDtoTemp = null;
+		Optional<ArticleEntity> articleDtoTemp = null;
 
-		ArticleDto articleDto = null;
+		ArticleEntity articleDto = null;
 
 		for (String articleIdString : articleIds) {
 
@@ -264,12 +264,12 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 				data.setSlug(articleDto.getSlug());
 
 				// List<ArticleTagArticleDto> tagDtoList = articleDto.getTagList();
-				List<ArticleTagArticleDto> tagDtoList = articleTagArticleRepo.findByArticleId(articleDto.getId());
+				List<ArticleTagArticleEntity> tagDtoList = articleTagArticleRepo.findByArticleId(articleDto.getId());
 
 				List<String> tagList = new ArrayList<String>();
-				Optional<ArticleTagDto> tag = null;
-				ArticleTagDto tagDto = null;
-				for (ArticleTagArticleDto articleTag : tagDtoList) {
+				Optional<ArticleTagEntity> tag = null;
+				ArticleTagEntity tagDto = null;
+				for (ArticleTagArticleEntity articleTag : tagDtoList) {
 
 					tag = articleTagRepo.findById(articleTag.getTagId());
 
@@ -284,10 +284,10 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 
 				Integer userId = articleDto.getUserId();
 
-				Optional<UserDto> userDto = userRepo.findById(userId);
+				Optional<UserEntity> userDto = userRepo.findById(userId);
 
 				if (userDto.isPresent()) {
-					UserDto user = userDto.get();
+					UserEntity user = userDto.get();
 
 					profile = new ProfileData(user.getId(), user.getUserName(), user.getBio(), user.getImage(), true);
 
@@ -306,7 +306,7 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 	public ArticleDataList findArticlesOfAuthors(Pageable pageable, List<Integer> authors) {
 
 		List<ArticleData> list = new ArrayList<ArticleData>();
-		List<ArticleDto> articleDtoList = null;
+		List<ArticleEntity> articleDtoList = null;
 		ArticleData data = null;
 		ProfileData profile = null;
 
@@ -321,11 +321,11 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 		}
 
 		Node rootNode = new RSQLParser().parse(search);
-		Specification<ArticleDto> spec = rootNode.accept(new CustomRsqlVisitor<ArticleDto>());
+		Specification<ArticleEntity> spec = rootNode.accept(new CustomRsqlVisitor<ArticleEntity>());
 
-		Page<ArticleDto> page = articleRepo.findAll(spec, pageable);
+		Page<ArticleEntity> page = articleRepo.findAll(spec, pageable);
 
-		for (ArticleDto articleDto : page.getContent()) {
+		for (ArticleEntity articleDto : page.getContent()) {
 			data = new ArticleData();
 
 			data.setId(articleDto.getId());
@@ -339,10 +339,10 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 
 			Integer userId = articleDto.getUserId();
 
-			Optional<UserDto> userDto = userRepo.findById(userId);
+			Optional<UserEntity> userDto = userRepo.findById(userId);
 
 			if (userDto.isPresent()) {
-				UserDto user = userDto.get();
+				UserEntity user = userDto.get();
 
 				profile = new ProfileData(user.getId(), user.getUserName(), user.getBio(), user.getImage(), true);
 
@@ -364,27 +364,27 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 	}
 
 	@Override
-	public Page<ArticleDto> findAll(Pageable pageable) {
+	public Page<ArticleEntity> findAll(Pageable pageable) {
 		return articleRepo.findAll(pageable);
 	}
 
 	@Override
-	public Page<ArticleDto> findByUserId(Pageable pageable, Integer author) {
+	public Page<ArticleEntity> findByUserId(Pageable pageable, Integer author) {
 		return articleRepo.findByUserId(pageable, author);
 	}
 
 	@Override
-	public Page<ArticleDto> findFavorites(Pageable pageable, Integer id) {
+	public Page<ArticleEntity> findFavorites(Pageable pageable, Integer id) {
 
-		Page<ArticleFavoriteDto> favoritesPage = articleFavoriteRepo.findPageByUserId(pageable, id);
+		Page<ArticleFavoriteEntity> favoritesPage = articleFavoriteRepo.findPageByUserId(pageable, id);
 
-		List<ArticleDto> articleDtoList = new ArrayList<ArticleDto>();
+		List<ArticleEntity> articleDtoList = new ArrayList<ArticleEntity>();
 		
-		for(ArticleFavoriteDto element:favoritesPage.getContent()) {
-			Optional<ArticleDto> articleDtoTemp = articleRepo.findById(element.getArticleId());
+		for(ArticleFavoriteEntity element:favoritesPage.getContent()) {
+			Optional<ArticleEntity> articleDtoTemp = articleRepo.findById(element.getArticleId());
 			if (articleDtoTemp.isPresent()) {
 				
-				ArticleDto article = articleDtoTemp.get();
+				ArticleEntity article = articleDtoTemp.get();
 
 				articleDtoList.add(article);
 			}
@@ -392,25 +392,25 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 			
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
 
-		PageImpl<ArticleDto> page = new PageImpl<ArticleDto>(articleDtoList, pageRequest,
+		PageImpl<ArticleEntity> page = new PageImpl<ArticleEntity>(articleDtoList, pageRequest,
 				favoritesPage.getTotalElements());		
 
 		return page;
 	}
 
 	@Override
-	public Page<ArticleDto> findByTag(Pageable pageable, String tag) {
-		ArticleTagDto tagDto = articleTagRepo.findByName(tag);
+	public Page<ArticleEntity> findByTag(Pageable pageable, String tag) {
+		ArticleTagEntity tagDto = articleTagRepo.findByName(tag);
 		
-		Page<ArticleTagArticleDto> articleTagPage = articleTagArticleRepo.findByTagId(pageable, tagDto.getId());
+		Page<ArticleTagArticleEntity> articleTagPage = articleTagArticleRepo.findByTagId(pageable, tagDto.getId());
 
-		List<ArticleDto> articleDtoList = new ArrayList<ArticleDto>();
+		List<ArticleEntity> articleDtoList = new ArrayList<ArticleEntity>();
 		
-		for(ArticleTagArticleDto articleTag:articleTagPage.getContent()) {
-			Optional<ArticleDto> articleDtoTemp = articleRepo.findById(articleTag.getArticleId());
+		for(ArticleTagArticleEntity articleTag:articleTagPage.getContent()) {
+			Optional<ArticleEntity> articleDtoTemp = articleRepo.findById(articleTag.getArticleId());
 			if (articleDtoTemp.isPresent()) {
 				
-				ArticleDto article = articleDtoTemp.get();
+				ArticleEntity article = articleDtoTemp.get();
 
 				articleDtoList.add(article);
 			}
@@ -418,7 +418,7 @@ public class ArticleReadServiceImpl implements ArticleReadService {
 		
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
 
-		PageImpl<ArticleDto> page = new PageImpl<ArticleDto>(articleDtoList, pageRequest,
+		PageImpl<ArticleEntity> page = new PageImpl<ArticleEntity>(articleDtoList, pageRequest,
 				articleTagPage.getTotalElements());		
 
 		return page;

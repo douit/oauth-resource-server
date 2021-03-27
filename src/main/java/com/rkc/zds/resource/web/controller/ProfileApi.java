@@ -2,8 +2,8 @@ package com.rkc.zds.resource.web.controller;
 
 import com.rkc.zds.resource.model.FollowRelation;
 import com.rkc.zds.resource.model.ProfileData;
-import com.rkc.zds.resource.dto.ArticleFollowDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ArticleFollowEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.ResourceNotFoundException;
 import com.rkc.zds.resource.repository.UserRepository;
 import com.rkc.zds.resource.repository.ArticleFollowRepository;
@@ -54,9 +54,9 @@ public class ProfileApi {
         AccessToken accessToken = session.getToken();
         String userLogin = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userLogin);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userLogin);
 		
-		UserDto user = null;
+		UserEntity user = null;
 		
 		if(userDto.isPresent()) {
 			user = userDto.get();
@@ -80,22 +80,22 @@ public class ProfileApi {
         AccessToken accessToken = session.getToken();
         String userLogin = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userLogin);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userLogin);
 		
-		UserDto user = null;
-		UserDto target = null;
+		UserEntity user = null;
+		UserEntity target = null;
 		
 		if(userDto.isPresent()) {
 			user = userDto.get();
 		}
     	
-    	Optional<UserDto> targetDto = userRepository.findByUserName(userName);
+    	Optional<UserEntity> targetDto = userRepository.findByUserName(userName);
     	
 		if(targetDto.isPresent()) {
 			target = targetDto.get();
 		}    	
 
-		ArticleFollowDto follow = new ArticleFollowDto();
+		ArticleFollowEntity follow = new ArticleFollowEntity();
 		follow.setUserId(user.getId());
 		follow.setFollowId(target.getId());
 		
@@ -116,22 +116,22 @@ public class ProfileApi {
         AccessToken accessToken = session.getToken();
         String userLogin = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userLogin);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userLogin);
 		
-		UserDto user = null;
-		UserDto target = null;
+		UserEntity user = null;
+		UserEntity target = null;
 		
 		if(userDto.isPresent()) {
 			user = userDto.get();
 		}
     	
-    	Optional<UserDto> targetDto = userRepository.findByUserName(userName);
+    	Optional<UserEntity> targetDto = userRepository.findByUserName(userName);
     	
 		if(targetDto.isPresent()) {
 			target = targetDto.get();
 		}    	
 
-		ArticleFollowDto follow = followRepository.findByUserIdAndFollowId(user.getId(), target.getId());
+		ArticleFollowEntity follow = followRepository.findByUserIdAndFollowId(user.getId(), target.getId());
 		
 		followRepository.delete(follow);
 		

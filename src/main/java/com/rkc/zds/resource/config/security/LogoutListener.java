@@ -16,7 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionDestroyedEvent;
 import org.springframework.stereotype.Component;
 
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.Message;
 import com.rkc.zds.resource.model.Node;
 import com.rkc.zds.resource.service.UserService;
@@ -35,7 +35,7 @@ public class LogoutListener implements ApplicationListener<SessionDestroyedEvent
 
 		// System.out.println("Session Destroyed Event");
 
-		UserDto userDTO = null;
+		UserEntity userDTO = null;
 
 		List<SecurityContext> lstSecurityContext = event.getSecurityContexts();
 
@@ -54,8 +54,8 @@ public class LogoutListener implements ApplicationListener<SessionDestroyedEvent
 
 		}
 
-		Message<UserDto> message = new Message<UserDto>();
-		Node<UserDto> node = new Node<UserDto>(userDTO);
+		Message<UserEntity> message = new Message<UserEntity>();
+		Node<UserEntity> node = new Node<UserEntity>(userDTO);
 		message.setData(node);
 		message.setMessage("Session Expired");
 

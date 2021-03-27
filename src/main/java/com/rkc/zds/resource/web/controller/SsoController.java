@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rkc.zds.resource.service.UserService;
-
-// import com.rkc.zds.dto.LoginDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.service.AuthenticationService;
 
 
@@ -38,7 +36,7 @@ public class SsoController {
 	private AuthenticationService authenticationService;
 	
 	@RequestMapping(value = "/sso/login", method = RequestMethod.POST)
-	public UserDto authenticate(@RequestBody String dummy, HttpServletRequest request, HttpServletResponse response)
+	public UserEntity authenticate(@RequestBody String dummy, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
 		// createDefaultAccount();
@@ -49,7 +47,7 @@ public class SsoController {
 	}
 
 	@RequestMapping(value = "/sso/getuser", method = RequestMethod.POST)
-	public UserDto getUser(@RequestBody String dummy, HttpServletRequest request, HttpServletResponse response)
+	public UserEntity getUser(@RequestBody String dummy, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
 		// createDefaultAccount();

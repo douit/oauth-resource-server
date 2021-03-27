@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.dto;
+package com.rkc.zds.resource.entity;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="PCM_CONTACT_EMAILS")
-public class EMailDto implements Serializable {
+public class EMailEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -64,7 +64,7 @@ public class EMailDto implements Serializable {
 		this.emailKind = emailKind;
 	}
 
-	public EMailDto() {
+	public EMailEntity() {
     }
 }
     

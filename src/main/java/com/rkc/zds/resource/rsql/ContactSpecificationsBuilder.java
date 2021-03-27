@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.rkc.zds.resource.dto.ContactDto;
+import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.util.SearchOperation;
 import com.rkc.zds.resource.util.SpecSearchCriteria;
 
@@ -41,11 +41,11 @@ public final class ContactSpecificationsBuilder {
         return this;
     }
 
-    public Specification<ContactDto> build() {
+    public Specification<ContactEntity> build() {
         if (params.size() == 0)
             return null;
 
-        Specification<ContactDto> result = new ContactSpecification(params.get(0));
+        Specification<ContactEntity> result = new ContactSpecification(params.get(0));
      
         for (int i = 1; i < params.size(); i++) {
             result = params.get(i).isOrPredicate()

@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.dto;
+package com.rkc.zds.resource.entity;
 // Generated Feb 4, 2019 12:58:44 AM by Hibernate Tools 5.3.6.Final
 
 import java.sql.Timestamp;
@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "PCM_ARTICLES")
-public class ArticleDto implements java.io.Serializable {
+public class ArticleEntity implements java.io.Serializable {
 	/**
 	 * 
 	 */
@@ -53,14 +53,14 @@ public class ArticleDto implements java.io.Serializable {
 	
 
 
-	public ArticleDto() {
+	public ArticleEntity() {
 	}
 
-	public ArticleDto(int id) {
+	public ArticleEntity(int id) {
 		this.id = id;
 	}
 
-	public ArticleDto(Integer id, Integer userId, String slug, String title, String description, String body,
+	public ArticleEntity(Integer id, Integer userId, String slug, String title, String description, String body,
 			Timestamp createdAt, Timestamp updatedAt) {
 		this.id = id;
 		this.userId = userId;
@@ -72,7 +72,7 @@ public class ArticleDto implements java.io.Serializable {
 		this.updatedAt = updatedAt;
 	}
 
-	public ArticleDto(String title2, String description2, String body2, String[] tagList, Integer id2) {
+	public ArticleEntity(String title2, String description2, String body2, String[] tagList, Integer id2) {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -175,15 +175,15 @@ public class ArticleDto implements java.io.Serializable {
 	
 	@OneToMany(cascade = {CascadeType.ALL, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "articleId", referencedColumnName = "id")
-	@ElementCollection(targetClass=ArticleTagArticleDto.class)
+	@ElementCollection(targetClass=ArticleTagArticleEntity.class)
     @JsonProperty("tagList")
-    private List<ArticleTagArticleDto> tagList = new ArrayList<ArticleTagArticleDto>();
+    private List<ArticleTagArticleEntity> tagList = new ArrayList<ArticleTagArticleEntity>();
 
-	public List<ArticleTagArticleDto> getTagList() {
+	public List<ArticleTagArticleEntity> getTagList() {
 		return tagList;
 	}
 
-	public void setTagList(List<ArticleTagArticleDto> tagList) {
+	public void setTagList(List<ArticleTagArticleEntity> tagList) {
 		this.tagList = tagList;
 	}
 }

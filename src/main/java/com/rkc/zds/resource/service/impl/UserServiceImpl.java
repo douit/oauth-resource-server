@@ -23,9 +23,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.rkc.zds.resource.dto.AuthorityDto;
 import com.rkc.zds.resource.dto.LoginDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.AuthorityEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.UserAlreadyExistException;
 import com.rkc.zds.resource.repository.AuthorityRepository;
 import com.rkc.zds.resource.repository.UserRepository;
@@ -44,10 +44,10 @@ public class UserServiceImpl implements UserService {
 	private PasswordEncoder passwordEncoder;
 
 	@Override
-	public UserDto findByUserName(String userName) {
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+	public UserEntity findByUserName(String userName) {
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 
-		UserDto user = null;
+		UserEntity user = null;
 
 		if (userDto.isPresent()) {
 			user = userDto.get();
@@ -57,24 +57,24 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<UserDto> findUsers(Pageable pageable) {
+	public Page<UserEntity> findUsers(Pageable pageable) {
 		return userRepository.findAll(pageable);
 	}
 
 	@Override
-	public UserDto findById(Integer id) {
+	public UserEntity findById(Integer id) {
 		return userRepository.getOne(id);
 	}
 
 	@Override
-	public List<UserDto> getUsers() {
+	public List<UserEntity> getUsers() {
 		return userRepository.findAll();
 	}
 
 	@Override
-	public UserDto getUser(int id) {
+	public UserEntity getUser(int id) {
 
-		Optional<UserDto> user = userRepository.findById(id);
+		Optional<UserEntity> user = userRepository.findById(id);
 		if (user.isPresent())
 			return user.get();
 		else
@@ -82,14 +82,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateUser(UserDto user) {
+	public void updateUser(UserEntity user) {
 
 		userRepository.saveAndFlush(user);
 
 	}
 
 	@Override
-	public void saveUser(UserDto user) {
+	public void saveUser(UserEntity user) {
 
 		userRepository.save(user);
 
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteUser(int id) {
 
-		UserDto user = null;
+		UserEntity user = null;
 		/*
 		 * // delete authorities for this user Optional<UserDto> userOptional =
 		 * userRepository.findById(id);
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto registerNewUserAccount(final UserDto accountDto) {
+	public UserEntity registerNewUserAccount(final UserEntity accountDto) {
 		if (loginExist(accountDto.getLogin())) {
 			throw new UserAlreadyExistException("There is an account with that userName: " + accountDto.getLogin());
 		}
@@ -129,9 +129,9 @@ public class UserServiceImpl implements UserService {
 		accountDto.setPassword(passwordEncoder.encode(accountDto.getPassword()));
 		accountDto.setEnabled(1);
 		accountDto.setIsLoggedIn(0);		
-		UserDto user = userRepository.save(accountDto);
+		UserEntity user = userRepository.save(accountDto);
 
-		AuthorityDto role = new AuthorityDto();
+		AuthorityEntity role = new AuthorityEntity();
 		role.setUserName(accountDto.getLogin());
 		role.setAuthority("ROLE_USER");
 
@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService {
 
 		if (result == null || result.getStatus() != 201) {
 			System.err.println("Couldn't create Keycloak user.");
-			UserDto temp = userRepository.findByLogin(accountDto.getLogin());
+			UserEntity temp = userRepository.findByLogin(accountDto.getLogin());
 			userRepository.delete(temp);
 			authorityRepository.delete(role);
 
@@ -184,7 +184,7 @@ public class UserServiceImpl implements UserService {
 
 	private boolean loginExist(final String login) {
 
-		UserDto user = userRepository.findByLogin(login);
+		UserEntity user = userRepository.findByLogin(login);
 		if (user != null) {
 
 			return true;
@@ -194,14 +194,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<UserDto> searchUsers(Pageable pageable, Specification<UserDto> spec) {
+	public Page<UserEntity> searchUsers(Pageable pageable, Specification<UserEntity> spec) {
 		return userRepository.findAll(spec, pageable);
 	}
 
-	public UserDto changePassword(LoginDto loginDTO, HttpServletRequest request, HttpServletResponse response) {
-		Optional<UserDto> user = userRepository.findByUserName(loginDTO.getLogin());
+	public UserEntity changePassword(LoginDto loginDTO, HttpServletRequest request, HttpServletResponse response) {
+		Optional<UserEntity> user = userRepository.findByUserName(loginDTO.getLogin());
 		
-		UserDto userDto = null;
+		UserEntity userDto = null;
 		
 		if (user.isPresent()) {
 			userDto = user.get();
@@ -215,16 +215,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<AuthorityDto> findAuthorities(Pageable pageable, String userName) {
+	public Page<AuthorityEntity> findAuthorities(Pageable pageable, String userName) {
 
-		Page<AuthorityDto> authority = authorityRepository.findByUserName(pageable, userName);
+		Page<AuthorityEntity> authority = authorityRepository.findByUserName(pageable, userName);
 
 		return authority;
 	}
 
 	@Override
-	public AuthorityDto getAuthority(int id) {
-		Optional<AuthorityDto> authority = authorityRepository.findById(id);
+	public AuthorityEntity getAuthority(int id) {
+		Optional<AuthorityEntity> authority = authorityRepository.findById(id);
 		if (authority.isPresent())
 			return authority.get();
 		else
@@ -233,14 +233,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void updateAuthority(AuthorityDto authority) {
+	public void updateAuthority(AuthorityEntity authority) {
 
 		authorityRepository.saveAndFlush(authority);
 
 	}
 
 	@Override
-	public void saveAuthority(AuthorityDto role) {
+	public void saveAuthority(AuthorityEntity role) {
 
 		authorityRepository.save(role);
 

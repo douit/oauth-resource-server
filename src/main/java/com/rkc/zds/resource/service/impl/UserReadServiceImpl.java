@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.UserData;
 import com.rkc.zds.resource.repository.UserRepository;
 import com.rkc.zds.resource.service.UserReadService;
@@ -19,11 +19,11 @@ public class UserReadServiceImpl implements UserReadService {
 	@Override
 	public UserData findByUserName(String userName) {
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 
 		UserData data = new UserData();
 
-		UserDto user = null;
+		UserEntity user = null;
 
 		if (userDto.isPresent()) {
 			user = userDto.get();
@@ -39,9 +39,9 @@ public class UserReadServiceImpl implements UserReadService {
 
 	@Override
 	public UserData findById(Integer id) {
-		Optional<UserDto> user = userRepository.findById(id);
+		Optional<UserEntity> user = userRepository.findById(id);
 
-		UserDto dto = null;
+		UserEntity dto = null;
 
 		UserData data = new UserData();
 

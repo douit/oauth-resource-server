@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.rkc.zds.resource.dto.ArticleFavoriteDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ArticleFavoriteEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.ArticleFavoriteCount;
 import com.rkc.zds.resource.repository.ArticleFavoriteRepository;
 import com.rkc.zds.resource.service.ArticleFavoritesReadService;
@@ -25,7 +25,7 @@ public class ArticleFavoritesReadServiceImpl implements ArticleFavoritesReadServ
 	
 	@Override
 	public boolean isUserFavorite(Integer userId, Integer articleId) {
-		Optional<ArticleFavoriteDto> dto = favoritesRepo.findByArticleIdAndUserId(articleId, userId);
+		Optional<ArticleFavoriteEntity> dto = favoritesRepo.findByArticleIdAndUserId(articleId, userId);
 		if(dto.isPresent()) {
 			return true;
 		}
@@ -34,7 +34,7 @@ public class ArticleFavoritesReadServiceImpl implements ArticleFavoritesReadServ
 
 	@Override
 	public int articleFavoriteCount(Integer articleId) {
-		List<ArticleFavoriteDto> favoriteDtoList = favoritesRepo.findByArticleId(articleId);
+		List<ArticleFavoriteEntity> favoriteDtoList = favoritesRepo.findByArticleId(articleId);
 		return favoriteDtoList.size();
 	}
 
@@ -44,8 +44,8 @@ public class ArticleFavoritesReadServiceImpl implements ArticleFavoritesReadServ
 		List<ArticleFavoriteCount> favoriteList = new ArrayList<ArticleFavoriteCount>();
 
 		ArticleFavoriteCount count = null;
-		ArticleFavoriteDto favorite = null;
-		List<ArticleFavoriteDto> favoriteDtoList;
+		ArticleFavoriteEntity favorite = null;
+		List<ArticleFavoriteEntity> favoriteDtoList;
 		
 		int incrementor = 0;
 		
@@ -56,7 +56,7 @@ public class ArticleFavoritesReadServiceImpl implements ArticleFavoritesReadServ
 			count.setCount(0);
 			favoriteDtoList = favoritesRepo.findByArticleId(id);
 			incrementor = 0;
-			for(ArticleFavoriteDto favoriteDto : favoriteDtoList) {
+			for(ArticleFavoriteEntity favoriteDto : favoriteDtoList) {
 		
 				incrementor++;
 
@@ -68,15 +68,15 @@ public class ArticleFavoritesReadServiceImpl implements ArticleFavoritesReadServ
 	}
 
 	@Override
-	public Set<Integer> userFavorites(List<Integer> list, UserDto currentUser) {
+	public Set<Integer> userFavorites(List<Integer> list, UserEntity currentUser) {
 		
 		Set<Integer> set = new HashSet<Integer>();
 		
-		List<ArticleFavoriteDto> favoriteDtoList = null;
+		List<ArticleFavoriteEntity> favoriteDtoList = null;
 		
 		for(Integer id: list) {
 			favoriteDtoList = favoritesRepo.findByArticleId(id);
-			for(ArticleFavoriteDto dto: favoriteDtoList) {
+			for(ArticleFavoriteEntity dto: favoriteDtoList) {
 				set.add(dto.getArticleId());
 			}
 		}

@@ -3,16 +3,16 @@ package com.rkc.zds.resource.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.rkc.zds.resource.dto.PhoneDto;
+import com.rkc.zds.resource.entity.PhoneEntity;
 
 public interface PhoneService {
-    Page<PhoneDto> findPhones(Pageable pageable, int contactId);
+    Page<PhoneEntity> findPhones(Pageable pageable, int contactId);
     
-    PhoneDto getPhone(int id);  
+    PhoneEntity getPhone(int id);  
     
-    public void savePhone(PhoneDto phone);
+    public void savePhone(PhoneEntity phone);
       
-    public void updatePhone(PhoneDto phone);
+    public void updatePhone(PhoneEntity phone);
  
 	void deletePhone(int id);
 }

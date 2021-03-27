@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.InvalidRequestException;
 import com.rkc.zds.resource.model.UserData;
 import com.rkc.zds.resource.model.UserWithToken;
@@ -54,9 +54,9 @@ public class CurrentUserApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
         
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 		
-		UserDto user = null;
+		UserEntity user = null;
 		
 		if(userDto.isPresent()) {
 			user = userDto.get();
@@ -68,7 +68,7 @@ public class CurrentUserApi {
 	}
 
 	@PutMapping
-	public ResponseEntity updateProfile(@AuthenticationPrincipal UserDto currentUser,
+	public ResponseEntity updateProfile(@AuthenticationPrincipal UserEntity currentUser,
 			@RequestHeader("Authorization") String token, @Valid @RequestBody UpdateUserParam updateUserParam,
 			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -83,13 +83,13 @@ public class CurrentUserApi {
 		return ResponseEntity.ok(userResponse(new UserWithToken(userData, token.split(" ")[1])));
 	}
 
-	private void checkUniquenessOfUserNameAndEmail(UserDto currentUser, UpdateUserParam updateUserParam,
+	private void checkUniquenessOfUserNameAndEmail(UserEntity currentUser, UpdateUserParam updateUserParam,
 			BindingResult bindingResult) {
 		
-		UserDto byUserName = null;
+		UserEntity byUserName = null;
 		
 		if (!"".equals(updateUserParam.getUserName())) {
-			Optional<UserDto> userDto = userRepository.findByUserName(updateUserParam.getUserName());
+			Optional<UserEntity> userDto = userRepository.findByUserName(updateUserParam.getUserName());
 
 			if(userDto.isPresent()) {
 				byUserName = userDto.get();
@@ -101,7 +101,7 @@ public class CurrentUserApi {
 		}
 
 		if (!"".equals(updateUserParam.getEmail())) {
-			Optional<UserDto> byEmail = userRepository.findByEmail(updateUserParam.getEmail());
+			Optional<UserEntity> byEmail = userRepository.findByEmail(updateUserParam.getEmail());
 			if (byEmail.isPresent() && !byEmail.get().equals(currentUser)) {
 				bindingResult.rejectValue("email", "DUPLICATED", "email already exist");
 			}

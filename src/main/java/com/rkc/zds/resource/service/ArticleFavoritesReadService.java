@@ -1,6 +1,6 @@
 package com.rkc.zds.resource.service;
 
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.ArticleFavoriteCount;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -17,5 +17,5 @@ public interface ArticleFavoritesReadService {
 
     List<ArticleFavoriteCount> articlesFavoriteCount(@Param("ids") List<Integer> list);
 
-    Set<Integer> userFavorites(@Param("ids") List<Integer> list, @Param("currentUser") UserDto currentUser);
+    Set<Integer> userFavorites(@Param("ids") List<Integer> list, @Param("currentUser") UserEntity currentUser);
 }

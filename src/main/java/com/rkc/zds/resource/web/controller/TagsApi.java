@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rkc.zds.resource.dto.ArticleTagArticleDto;
-import com.rkc.zds.resource.dto.ArticleTagDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ArticleTagArticleEntity;
+import com.rkc.zds.resource.entity.ArticleTagEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.NoAuthorizationException;
 import com.rkc.zds.resource.exception.ResourceNotFoundException;
 import com.rkc.zds.resource.repository.ArticleRepository;
@@ -77,19 +77,19 @@ public class TagsApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 		
-		UserDto user = null;
+		UserEntity user = null;
 		
 		if(userDto.isPresent()) {
 			user = userDto.get();
 		}
 		
-		final UserDto temp = user;
+		final UserEntity temp = user;
 				
-		ArticleTagDto tagDto = tagRepository.findByName(tag);
+		ArticleTagEntity tagDto = tagRepository.findByName(tag);
 		
-		ArticleTagArticleDto tagArticle = tagArticleRepository.findByTagIdAndArticleId(tagDto.getId(), id);
+		ArticleTagArticleEntity tagArticle = tagArticleRepository.findByTagIdAndArticleId(tagDto.getId(), id);
 		
 		//return articleRepository.findBySlug(slug).map(article -> {
 		return articleRepository.findById(id).map(article -> {
@@ -99,7 +99,7 @@ public class TagsApi {
 			tagArticleRepository.delete(tagArticle);
 			
 			//if there are no articles with this tag, delete tag
-			List<ArticleTagArticleDto> tagArticleList = new ArrayList<ArticleTagArticleDto>();
+			List<ArticleTagArticleEntity> tagArticleList = new ArrayList<ArticleTagArticleEntity>();
 			tagArticleList = tagArticleRepository.findByTagId(tagDto.getId());
 			if(tagArticleList.size()==0) {
 				tagRepository.delete(tagDto);
@@ -119,21 +119,21 @@ public class TagsApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 		
-		UserDto user = null;
+		UserEntity user = null;
 		
 		if(userDto.isPresent()) {
 			user = userDto.get();
 		}
 		
-		final UserDto temp = user;
+		final UserEntity temp = user;
 		
 		String tag = "";
 		
-		ArticleTagDto tagDto = tagRepository.findByName(tag);
+		ArticleTagEntity tagDto = tagRepository.findByName(tag);
 		
-		ArticleTagArticleDto tagArticle = tagArticleRepository.findByTagIdAndArticleId(tagDto.getId(), id);
+		ArticleTagArticleEntity tagArticle = tagArticleRepository.findByTagIdAndArticleId(tagDto.getId(), id);
 		
 		//return articleRepository.findBySlug(slug).map(article -> {
 		return articleRepository.findById(id).map(article -> {
@@ -143,7 +143,7 @@ public class TagsApi {
 			tagArticleRepository.delete(tagArticle);
 			
 			//if there are no articles with this tag, delete tag
-			List<ArticleTagArticleDto> tagArticleList = new ArrayList<ArticleTagArticleDto>();
+			List<ArticleTagArticleEntity> tagArticleList = new ArrayList<ArticleTagArticleEntity>();
 			tagArticleList = tagArticleRepository.findByTagId(tagDto.getId());
 			if(tagArticleList.size()==0) {
 				tagRepository.delete(tagDto);

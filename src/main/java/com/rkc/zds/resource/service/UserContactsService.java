@@ -5,21 +5,21 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.rkc.zds.resource.dto.ContactDto;
-import com.rkc.zds.resource.dto.UserContactDto;
+import com.rkc.zds.resource.entity.ContactEntity;
+import com.rkc.zds.resource.entity.UserContactEntity;
 
 public interface UserContactsService {
-    Page<UserContactDto> findUserContacts(Pageable pageable, int userId);
+    Page<UserContactEntity> findUserContacts(Pageable pageable, int userId);
 
-    Page<ContactDto> findFilteredContacts(Pageable pageable, int userId);    
+    Page<ContactEntity> findFilteredContacts(Pageable pageable, int userId);    
 
-    List<UserContactDto> findAllUserContacts(int userId);
+    List<UserContactEntity> findAllUserContacts(int userId);
     
-    List<UserContactDto> getAllUserContacts();
+    List<UserContactEntity> getAllUserContacts();
 
-    public void addUserContact(UserContactDto userContact);
+    public void addUserContact(UserContactEntity userContact);
     
-    public void saveUserContact(UserContactDto userContact); 
+    public void saveUserContact(UserContactEntity userContact); 
     
 	void deleteUserContact(int id);
 }

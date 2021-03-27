@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.dto;
+package com.rkc.zds.resource.entity;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="PCM_CONTACT_PHONES")
-public class PhoneDto implements Serializable {
+public class PhoneEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -64,7 +64,7 @@ public class PhoneDto implements Serializable {
 		this.phoneKind = phoneKind;
 	}
 
-	public PhoneDto() {
+	public PhoneEntity() {
     }
 }
     

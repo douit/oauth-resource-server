@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import com.rkc.zds.resource.dto.PhoneDto;
+import com.rkc.zds.resource.entity.PhoneEntity;
 import com.rkc.zds.resource.repository.PhoneRepository;
 import com.rkc.zds.resource.service.PhoneService;
 
@@ -19,23 +19,23 @@ public class PhoneServiceImpl implements PhoneService {
 	private PhoneRepository phoneRepo;
 
 	@Override
-	public Page<PhoneDto> findPhones(Pageable pageable, int contactId) {
+	public Page<PhoneEntity> findPhones(Pageable pageable, int contactId) {
 
-		Page<PhoneDto> page = phoneRepo.findByContactId(pageable, contactId);
+		Page<PhoneEntity> page = phoneRepo.findByContactId(pageable, contactId);
 
 		return page;
 	}
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void savePhone(PhoneDto phone) {
+	public void savePhone(PhoneEntity phone) {
 
 		phoneRepo.save(phone);
 	}
 	
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void updatePhone(PhoneDto phone) {
+	public void updatePhone(PhoneEntity phone) {
 
 		phoneRepo.saveAndFlush(phone);
 		
@@ -49,9 +49,9 @@ public class PhoneServiceImpl implements PhoneService {
 	}
 
 	@Override
-	public PhoneDto getPhone(int id) {
+	public PhoneEntity getPhone(int id) {
 	
-		Optional<PhoneDto> phone = phoneRepo.findById(id);
+		Optional<PhoneEntity> phone = phoneRepo.findById(id);
 		if(phone.isPresent())
 			return phone.get();
 		else

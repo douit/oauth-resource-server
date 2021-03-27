@@ -5,10 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import com.rkc.zds.resource.dto.ContactDto;
+import com.rkc.zds.resource.entity.ContactEntity;
 
-public interface ContactRepository extends JpaRepository<ContactDto, Integer>, JpaSpecificationExecutor<ContactDto> {
+public interface ContactRepository extends JpaRepository<ContactEntity, Integer>, JpaSpecificationExecutor<ContactEntity> {
   
-	Page<ContactDto> findByLastNameIgnoreCaseLike(Pageable pageable, String lastName);
+	Page<ContactEntity> findByLastNameIgnoreCaseLike(Pageable pageable, String lastName);
 	 
 }

@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.dto;
+package com.rkc.zds.resource.entity;
 
 import java.sql.Timestamp;
 
@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "PCM_ARTICLE_COMMENTS")
-public class ArticleCommentDto {
+public class ArticleCommentEntity {
 	@Id
 	@Column(name="ID", unique = true)
 	@GeneratedValue(strategy=GenerationType.IDENTITY)	
@@ -25,7 +25,7 @@ public class ArticleCommentDto {
 	@Column(name="CREATED_AT")	
     private Timestamp createdAt;
    
-    public ArticleCommentDto() {
+    public ArticleCommentEntity() {
 		// TODO Auto-generated constructor stub
 	}
 

@@ -6,12 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.rkc.zds.resource.dto.UserContactDto;
+import com.rkc.zds.resource.entity.UserContactEntity;
 
-public interface UserContactsRepository extends JpaRepository<UserContactDto, Integer> {
+public interface UserContactsRepository extends JpaRepository<UserContactEntity, Integer> {
   
-	Page<UserContactDto> findByUserId(Pageable pageable, int userId);
+	Page<UserContactEntity> findByUserId(Pageable pageable, int userId);
 
-	List<UserContactDto> findByUserId(int userId);
+	List<UserContactEntity> findByUserId(int userId);
 	       
 }

@@ -26,12 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rkc.zds.resource.dto.ArticleCommentDto;
-import com.rkc.zds.resource.dto.ArticleDto;
-import com.rkc.zds.resource.dto.ArticleFavoriteDto;
-import com.rkc.zds.resource.dto.ArticleTagArticleDto;
-import com.rkc.zds.resource.dto.ArticleTagDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ArticleCommentEntity;
+import com.rkc.zds.resource.entity.ArticleEntity;
+import com.rkc.zds.resource.entity.ArticleFavoriteEntity;
+import com.rkc.zds.resource.entity.ArticleTagArticleEntity;
+import com.rkc.zds.resource.entity.ArticleTagEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.NoAuthorizationException;
 import com.rkc.zds.resource.exception.ResourceNotFoundException;
 import com.rkc.zds.resource.model.ArticleData;
@@ -85,9 +85,9 @@ public class ArticleApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 
-		UserDto user = null;
+		UserEntity user = null;
 
 		if (userDto.isPresent()) {
 			user = userDto.get();
@@ -111,20 +111,20 @@ public class ArticleApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 
-		UserDto user = null;
+		UserEntity user = null;
 
 		if (userDto.isPresent()) {
 			user = userDto.get();
 		}
 
-		ArticleDto article = new ArticleDto();
+		ArticleEntity article = new ArticleEntity();
 
 		ObjectMapper mapper = new ObjectMapper();
 
 		try {
-			article = mapper.readValue(jsonString, ArticleDto.class);
+			article = mapper.readValue(jsonString, ArticleEntity.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -140,9 +140,9 @@ public class ArticleApi {
 			processTags(article);
 		}
 
-		Optional<ArticleDto> articleTemp = articleRepository.findById(article.getId());
+		Optional<ArticleEntity> articleTemp = articleRepository.findById(article.getId());
 
-		ArticleDto articleDto = null;
+		ArticleEntity articleDto = null;
 		if (articleTemp.isPresent()) {
 			articleDto = articleTemp.get();
 
@@ -161,27 +161,27 @@ public class ArticleApi {
 
 	}
 
-	private void processTags(ArticleDto article) {
+	private void processTags(ArticleEntity article) {
 
 		String tags = article.getTags();
 		String[] array = tags.split("\\s+");
-		ArticleTagDto tagDto = null;
-		ArticleTagArticleDto tagArticleDto = null;
+		ArticleTagEntity tagDto = null;
+		ArticleTagArticleEntity tagArticleDto = null;
 
-		List<ArticleTagArticleDto> articleTagList = null;
+		List<ArticleTagArticleEntity> articleTagList = null;
 
 		for (String tag : array) {
 			if (!tag.equals("")) {
 				tagDto = tagRepository.findByName(tag);
 				if (tagDto == null) {
-					tagDto = new ArticleTagDto();
+					tagDto = new ArticleTagEntity();
 					tagDto.setName(tag);
 					tagDto = tagRepository.save(tagDto);
 				}
 				if (tagDto != null) {
 					tagArticleDto = tagArticleRepository.findByTagIdAndArticleId(tagDto.getId(), article.getId());
 					if (tagArticleDto == null) {
-						tagArticleDto = new ArticleTagArticleDto();
+						tagArticleDto = new ArticleTagArticleEntity();
 						tagArticleDto.setTagId(tagDto.getId());
 						tagArticleDto.setArticleId(article.getId());
 						tagArticleDto = tagArticleRepository.save(tagArticleDto);
@@ -201,15 +201,15 @@ public class ArticleApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 
-		UserDto user = null;
+		UserEntity user = null;
 
 		if (userDto.isPresent()) {
 			user = userDto.get();
 		}
 
-		final UserDto temp = user;
+		final UserEntity temp = user;
 
 		return articleRepository.findById(id).map(article -> {
 			if (!AuthorizationService.canWriteArticle(temp, article)) {
@@ -227,31 +227,31 @@ public class ArticleApi {
 		}).orElseThrow(ResourceNotFoundException::new);
 	}
 
-	private void deleteCommentsForArticle(ArticleDto article) {
-		List<ArticleCommentDto> list = articleCommentRepository.findByArticleId(article.getId());
+	private void deleteCommentsForArticle(ArticleEntity article) {
+		List<ArticleCommentEntity> list = articleCommentRepository.findByArticleId(article.getId());
 		
-		for(ArticleCommentDto comment:list) {
+		for(ArticleCommentEntity comment:list) {
 			articleCommentRepository.delete(comment);
 		}		
 	}
 
-	private void deleteFavoritesForArticle(ArticleDto article) {
-		List<ArticleFavoriteDto> list = favoritesRepository.findByArticleId(article.getId());
+	private void deleteFavoritesForArticle(ArticleEntity article) {
+		List<ArticleFavoriteEntity> list = favoritesRepository.findByArticleId(article.getId());
 		
-		for(ArticleFavoriteDto favorite:list) {
+		for(ArticleFavoriteEntity favorite:list) {
 			favoritesRepository.delete(favorite);
 		}		
 	}
 	
-	private void deleteTagsForArticle(ArticleDto article) {
-		List<ArticleTagArticleDto> articleTagList = tagArticleRepository.findByArticleId(article.getId());
-		Optional<ArticleTagDto> tagDtoOpt = null;
-		ArticleTagDto tagDto = null;
+	private void deleteTagsForArticle(ArticleEntity article) {
+		List<ArticleTagArticleEntity> articleTagList = tagArticleRepository.findByArticleId(article.getId());
+		Optional<ArticleTagEntity> tagDtoOpt = null;
+		ArticleTagEntity tagDto = null;
 
-		for (ArticleTagArticleDto articleTag : articleTagList) {
+		for (ArticleTagArticleEntity articleTag : articleTagList) {
 			tagArticleRepository.delete(articleTag);
 
-			List<ArticleTagArticleDto> list = tagArticleRepository.findByTagId(articleTag.getTagId());
+			List<ArticleTagArticleEntity> list = tagArticleRepository.findByTagId(articleTag.getTagId());
 
 			if (list.size() == 0) {
 				tagDtoOpt = tagRepository.findById(articleTag.getTagId());

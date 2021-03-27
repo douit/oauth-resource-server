@@ -12,7 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rkc.zds.resource.dto.ContactDto;
+import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.util.SearchCriteria;
 
 import org.springframework.context.annotation.Bean;
@@ -20,21 +20,21 @@ import org.springframework.context.annotation.Bean;
 @Service
 public interface ContactService {
 
-    Page<ContactDto> findContacts(Pageable pageable);
+    Page<ContactEntity> findContacts(Pageable pageable);
 
-    Page<ContactDto> searchContacts(String name);
+    Page<ContactEntity> searchContacts(String name);
     
-    Page<ContactDto> searchContacts(Pageable pageable, List<SearchCriteria> params);
+    Page<ContactEntity> searchContacts(Pageable pageable, List<SearchCriteria> params);
     
-	Page<ContactDto> searchContacts(Pageable pageable, Specification<ContactDto> spec);
+	Page<ContactEntity> searchContacts(Pageable pageable, Specification<ContactEntity> spec);
 
-    Page<ContactDto> findFilteredContacts(Pageable pageable, int groupId);
+    Page<ContactEntity> findFilteredContacts(Pageable pageable, int groupId);
        
-    ContactDto getContact(int id);    
+    ContactEntity getContact(int id);    
      
-    public ContactDto saveContact(ContactDto contact);
+    public ContactEntity saveContact(ContactEntity contact);
        
-    public void updateContact(ContactDto contact);
+    public void updateContact(ContactEntity contact);
 
 	void deleteContact(int id);
 

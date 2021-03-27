@@ -30,9 +30,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.Message;
 import com.rkc.zds.resource.model.Node;
-import com.rkc.zds.resource.dto.UserDto;
 
 @Service
 public class AuthenticationService {
@@ -158,7 +158,7 @@ public class AuthenticationService {
 	 *                       userDTO.setProfile(securityUser.getProfile()); return
 	 *                       userDTO; }
 	 */
-	public UserDto authenticateViaSSO(HttpServletRequest request, HttpServletResponse response) throws InterruptedException {
+	public UserEntity authenticateViaSSO(HttpServletRequest request, HttpServletResponse response) throws InterruptedException {
 
 		KeycloakAuthenticationToken token = (KeycloakAuthenticationToken) request.getUserPrincipal();
 		KeycloakPrincipal<?> principal = (KeycloakPrincipal) token.getPrincipal();
@@ -173,14 +173,14 @@ public class AuthenticationService {
 		}
 
 		String userName = accessToken.getPreferredUsername();
-		UserDto userDTO = userService.findByUserName(userName);
+		UserEntity userDTO = userService.findByUserName(userName);
 		userDTO.setIsLoggedIn(1);
 		userService.saveUser(userDTO);
 		
 		// send a message to subscribed apps that a user has logged in
 		//TimeUnit.SECONDS.sleep(2);
-		Message<UserDto> message = new Message();
-		Node<UserDto> node = new Node<UserDto>(userDTO);
+		Message<UserEntity> message = new Message();
+		Node<UserEntity> node = new Node<UserEntity>(userDTO);
 		message.setData(node);
 		message.setMessage("Logged In");
 		webSocket.convertAndSend("/topic/user/auth", message);
@@ -188,14 +188,14 @@ public class AuthenticationService {
 		return userDTO;
 	}
 	
-	public UserDto getUser(HttpServletRequest request, HttpServletResponse response) {
+	public UserEntity getUser(HttpServletRequest request, HttpServletResponse response) {
 
 		KeycloakAuthenticationToken token = (KeycloakAuthenticationToken) request.getUserPrincipal();
 		KeycloakPrincipal principal = (KeycloakPrincipal) token.getPrincipal();
 		KeycloakSecurityContext session = principal.getKeycloakSecurityContext();
 		AccessToken accessToken = session.getToken();
 		String userName = accessToken.getPreferredUsername();
-		UserDto userDTO = userService.findByUserName(userName);
+		UserEntity userDTO = userService.findByUserName(userName);
 
 		return userDTO;
 	}
@@ -205,7 +205,7 @@ public class AuthenticationService {
 	 */
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
 
-		UserDto userDTO = null;
+		UserEntity userDTO = null;
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -248,8 +248,8 @@ public class AuthenticationService {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
 
-		Message<UserDto> message = new Message();
-		Node<UserDto> node = new Node<UserDto>(userDTO);
+		Message<UserEntity> message = new Message();
+		Node<UserEntity> node = new Node<UserEntity>(userDTO);
 		message.setData(node);
 		message.setMessage("Logged Out");
 
@@ -274,8 +274,8 @@ public class AuthenticationService {
 		SecurityContextHolder.getContext().setAuthentication(authToken);
 	}
 
-	public UserDto findByUserName(String login) {
-		UserDto userDTO = userService.findByUserName(login);
+	public UserEntity findByUserName(String login) {
+		UserEntity userDTO = userService.findByUserName(login);
 		return userDTO;
 	}
 

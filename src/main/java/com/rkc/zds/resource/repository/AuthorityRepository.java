@@ -4,10 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.rkc.zds.resource.dto.AuthorityDto;
+import com.rkc.zds.resource.entity.AuthorityEntity;
 
-public interface AuthorityRepository extends JpaRepository<AuthorityDto, Integer> {
+public interface AuthorityRepository extends JpaRepository<AuthorityEntity, Integer> {
 	
-	Page<AuthorityDto> findByUserName(Pageable pageable, String userName);
+	Page<AuthorityEntity> findByUserName(Pageable pageable, String userName);
 	
 }

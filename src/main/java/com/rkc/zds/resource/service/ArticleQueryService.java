@@ -15,10 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.rkc.zds.resource.dto.ArticleDto;
-import com.rkc.zds.resource.dto.ArticleTagArticleDto;
-import com.rkc.zds.resource.dto.ArticleTagDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ArticleEntity;
+import com.rkc.zds.resource.entity.ArticleTagArticleEntity;
+import com.rkc.zds.resource.entity.ArticleTagEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.ArticleData;
 import com.rkc.zds.resource.model.ArticleDataList;
 import com.rkc.zds.resource.model.ArticleFavoriteCount;
@@ -53,7 +53,7 @@ public class ArticleQueryService {
 		this.articleFavoritesReadService = articleFavoritesReadService;
 	}
 
-	public Optional<ArticleData> findById(Integer articleId, UserDto user) {
+	public Optional<ArticleData> findById(Integer articleId, UserEntity user) {
 		ArticleData articleData = articleReadService.findById(articleId);
 		if (articleData == null) {
 			return Optional.empty();
@@ -66,7 +66,7 @@ public class ArticleQueryService {
 	}
 
 	public ArticleDataList findRecentArticles(Pageable pageable, String tag, String author, String favoritedBy,
-			UserDto currentUser) {
+			UserEntity currentUser) {
 		List<String> articleIds = articleReadService.queryArticles(pageable, tag, author, favoritedBy);
 		// int articleCount = articleReadService.countArticle(tag, author, favoritedBy);
 		int articleCount = articleIds.size();
@@ -79,7 +79,7 @@ public class ArticleQueryService {
 		}
 	}
 
-	private void fillExtraInfo(List<ArticleData> articles, UserDto currentUser) {
+	private void fillExtraInfo(List<ArticleData> articles, UserEntity currentUser) {
 		setFavoriteCount(articles);
 		if (currentUser != null) {
 			setIsFavorite(articles, currentUser);
@@ -87,7 +87,7 @@ public class ArticleQueryService {
 		}
 	}
 
-	private void setIsFollowingAuthor(List<ArticleData> articles, UserDto currentUser) {
+	private void setIsFollowingAuthor(List<ArticleData> articles, UserEntity currentUser) {
 		Set<Integer> followingAuthors = userRelationshipQueryService.followingAuthors(currentUser.getId(),
 				articles.stream().map(articleData1 -> articleData1.getProfileData().getId()).collect(toList()));
 		articles.forEach(articleData -> {
@@ -114,7 +114,7 @@ public class ArticleQueryService {
 
 	}
 
-	private void setIsFavorite(List<ArticleData> articles, UserDto currentUser) {
+	private void setIsFavorite(List<ArticleData> articles, UserEntity currentUser) {
 		Set<Integer> favoritedArticles = articleFavoritesReadService.userFavorites(
 				articles.stream().map(articleData -> articleData.getId()).collect(toList()), currentUser);
 
@@ -127,14 +127,14 @@ public class ArticleQueryService {
 		}
 	}
 
-	private void fillExtraInfo(Integer articleId, UserDto user, ArticleData articleData) {
+	private void fillExtraInfo(Integer articleId, UserEntity user, ArticleData articleData) {
 		articleData.setFavorited(articleFavoritesReadService.isUserFavorite(user.getId(), articleId));
 		articleData.setFavoritesCount(articleFavoritesReadService.articleFavoriteCount(articleId));
 		articleData.getProfileData().setFollowing(
 				userRelationshipQueryService.isUserFollowing(user.getId(), articleData.getProfileData().getId()));
 	}
 
-	public ArticleDataList findUserFeed(Pageable pageable, UserDto user) {
+	public ArticleDataList findUserFeed(Pageable pageable, UserEntity user) {
 		List<Integer> followedUsers = userRelationshipQueryService.followedUsers(user.getId());
 		if (followedUsers.size() == 0) {
 			return new ArticleDataList(new ArrayList<>(), 0);
@@ -146,19 +146,19 @@ public class ArticleQueryService {
 		}
 	}
 
-	public Page<ArticleDto> findArticles(Pageable pageable, String tag, String author, String favoritedBy, UserDto userDto) {
+	public Page<ArticleEntity> findArticles(Pageable pageable, String tag, String author, String favoritedBy, UserEntity userDto) {
 		
 		return articleReadService.findAll(pageable);
 	}
 
-	public ArticleDataList convertToArticleData(Page<ArticleDto> pageList) {
+	public ArticleDataList convertToArticleData(Page<ArticleEntity> pageList) {
 		ArticleDataList articles = new ArticleDataList(new ArrayList<>(), 0);
 		List<ArticleData> articleDatas = new ArrayList<>();
 		ArticleData data = null;
-		UserDto user = null;
+		UserEntity user = null;
 		ProfileData profile = null;
 		
-		for(ArticleDto articleDto:pageList.toList()) {
+		for(ArticleEntity articleDto:pageList.toList()) {
 			data = new ArticleData();
 
 			data.setId(articleDto.getId());
@@ -171,11 +171,11 @@ public class ArticleQueryService {
 			data.setSlug(articleDto.toSlug(articleDto.getTitle()));
 
 			// List<ArticleTagArticleDto> tagDtoList = articleDto.getTagList();
-			List<ArticleTagArticleDto> tagDtoList = articleTagArticleRepo.findByArticleId(articleDto.getId());
+			List<ArticleTagArticleEntity> tagDtoList = articleTagArticleRepo.findByArticleId(articleDto.getId());
 			List<String> tagList = new ArrayList<String>();
-			Optional<ArticleTagDto> tag = null;
-			ArticleTagDto tagDto = null;
-			for (ArticleTagArticleDto articleTag : tagDtoList) {
+			Optional<ArticleTagEntity> tag = null;
+			ArticleTagEntity tagDto = null;
+			for (ArticleTagArticleEntity articleTag : tagDtoList) {
 
 				tag = articleTagRepo.findById(articleTag.getTagId());
 
@@ -190,7 +190,7 @@ public class ArticleQueryService {
 			
 			Integer userId = articleDto.getUserId();
 
-			Optional<UserDto> userDto = userRepo.findById(userId);
+			Optional<UserEntity> userDto = userRepo.findById(userId);
 
 			if (userDto.isPresent()) {
 				user = userDto.get();

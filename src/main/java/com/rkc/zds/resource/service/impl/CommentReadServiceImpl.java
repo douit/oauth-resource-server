@@ -7,8 +7,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.rkc.zds.resource.dto.ArticleCommentDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ArticleCommentEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.CommentData;
 import com.rkc.zds.resource.model.ProfileData;
 import com.rkc.zds.resource.repository.ArticleCommentRepository;
@@ -25,15 +25,15 @@ public class CommentReadServiceImpl implements CommentReadService {
 	UserRepository userRepo;
 	
 	@Override
-	public CommentData findById(Integer id, UserDto userDto) {
+	public CommentData findById(Integer id, UserEntity userDto) {
 		
-		Optional<ArticleCommentDto> element = articleCommentRepo.findById(id);
+		Optional<ArticleCommentEntity> element = articleCommentRepo.findById(id);
 		CommentData data = null;
-		Optional<UserDto> user = null;
+		Optional<UserEntity> user = null;
 		ProfileData profile = null;
 		
 		if(element.isPresent()) {
-			ArticleCommentDto comment = element.get();
+			ArticleCommentEntity comment = element.get();
 			data = new CommentData();
 			data.setArticleId(comment.getArticleId());
 			data.setBody(comment.getBody());
@@ -56,16 +56,16 @@ public class CommentReadServiceImpl implements CommentReadService {
 
 	@Override
 	public List<CommentData> findByArticleId(Integer articleId) {
-		List<ArticleCommentDto> articleCommentList = articleCommentRepo.findByArticleId(articleId);
+		List<ArticleCommentEntity> articleCommentList = articleCommentRepo.findByArticleId(articleId);
 
 		List<CommentData> commentDataList = new ArrayList<CommentData>();
 		
 		CommentData data = null;
 		ProfileData profile = null;
-		Optional<UserDto> user = null;
-		UserDto userDto = null;
+		Optional<UserEntity> user = null;
+		UserEntity userDto = null;
 		
-		for(ArticleCommentDto element: articleCommentList) {
+		for(ArticleCommentEntity element: articleCommentList) {
 			data = new CommentData();
 			data.setId(element.getId());
 			data.setArticleId(element.getArticleId());
@@ -90,9 +90,9 @@ public class CommentReadServiceImpl implements CommentReadService {
 	}
 
 	@Override
-	public Optional<ArticleCommentDto> findByArticleIdAndUserId(Integer articleId, Integer userId) {
+	public Optional<ArticleCommentEntity> findByArticleIdAndUserId(Integer articleId, Integer userId) {
 
-		Optional<ArticleCommentDto> comment = articleCommentRepo.findByArticleIdAndUserId(articleId, userId);
+		Optional<ArticleCommentEntity> comment = articleCommentRepo.findByArticleIdAndUserId(articleId, userId);
 
 		return comment;
 		

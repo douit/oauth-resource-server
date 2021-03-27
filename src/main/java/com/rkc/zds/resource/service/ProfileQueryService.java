@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.ProfileData;
 import com.rkc.zds.resource.model.UserData;
 
@@ -20,7 +20,7 @@ public class ProfileQueryService {
         this.userRelationshipQueryService = userRelationshipQueryService;
     }
 
-    public Optional<ProfileData> findByUserName(String userName, UserDto currentUser) {
+    public Optional<ProfileData> findByUserName(String userName, UserEntity currentUser) {
         UserData userData = userReadService.findByUserName(userName);
         if (userData == null) {
             return Optional.empty();

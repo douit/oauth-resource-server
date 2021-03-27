@@ -10,8 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import com.rkc.zds.resource.dto.EMailDto;
 import com.rkc.zds.resource.email.SendMailUsingAuthentication;
+import com.rkc.zds.resource.entity.EMailEntity;
 import com.rkc.zds.resource.model.EMailSend;
 import com.rkc.zds.resource.repository.EMailRepository;
 import com.rkc.zds.resource.service.EMailService;
@@ -23,23 +23,23 @@ public class EMailServiceImpl implements EMailService {
 	private EMailRepository eMailRepo;
 
 	@Override
-	public Page<EMailDto> findEMails(Pageable pageable, int contactId) {
+	public Page<EMailEntity> findEMails(Pageable pageable, int contactId) {
 
-		Page<EMailDto> page = eMailRepo.findByContactId(pageable, contactId);
+		Page<EMailEntity> page = eMailRepo.findByContactId(pageable, contactId);
 
 		return page;
 	}
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void saveEMail(EMailDto email) {
+	public void saveEMail(EMailEntity email) {
 
 		eMailRepo.save(email);
 	}
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void updateEMail(EMailDto email) {
+	public void updateEMail(EMailEntity email) {
 
 		eMailRepo.saveAndFlush(email);
 
@@ -53,9 +53,9 @@ public class EMailServiceImpl implements EMailService {
 	}
 
 	@Override
-	public EMailDto getEMail(int id) {
+	public EMailEntity getEMail(int id) {
 
-		Optional<EMailDto> email = eMailRepo.findById(id);
+		Optional<EMailEntity> email = eMailRepo.findById(id);
 		if (email.isPresent())
 			return email.get();
 		else

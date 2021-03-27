@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.rkc.zds.resource.dto.ArticleDto;
+import com.rkc.zds.resource.entity.ArticleEntity;
 import com.rkc.zds.resource.model.ArticleData;
 import com.rkc.zds.resource.model.ArticleDataList;
 
@@ -28,14 +28,14 @@ public interface ArticleReadService {
 
     int countFeedSize(@Param("authors") List<Integer> authors);
 
-	Page<ArticleDto> findAll(Pageable pageable);
+	Page<ArticleEntity> findAll(Pageable pageable);
 
-	Page<ArticleDto> findByUserId(Pageable pageable, Integer id);
+	Page<ArticleEntity> findByUserId(Pageable pageable, Integer id);
 		
-	Page<ArticleDto> searchArticles(Pageable pageable, Specification<ArticleDto> spec);
+	Page<ArticleEntity> searchArticles(Pageable pageable, Specification<ArticleEntity> spec);
 
-	Page<ArticleDto> findFavorites(Pageable pageable, Integer id);
+	Page<ArticleEntity> findFavorites(Pageable pageable, Integer id);
 	
-	Page<ArticleDto> findByTag(Pageable pageable, String tag);
+	Page<ArticleEntity> findByTag(Pageable pageable, String tag);
 
 }

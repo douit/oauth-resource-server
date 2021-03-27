@@ -6,12 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.rkc.zds.resource.dto.EMailDto;
+import com.rkc.zds.resource.entity.EMailEntity;
 
-public interface EMailRepository extends JpaRepository<EMailDto, Integer> {
+public interface EMailRepository extends JpaRepository<EMailEntity, Integer> {
   
-	Page<EMailDto> findByContactId(Pageable pageable, int contactId);
+	Page<EMailEntity> findByContactId(Pageable pageable, int contactId);
 
-	List<EMailDto> findByContactId(int contactId);
+	List<EMailEntity> findByContactId(int contactId);
 	       
 }

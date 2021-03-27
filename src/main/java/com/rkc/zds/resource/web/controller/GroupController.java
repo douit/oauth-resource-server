@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rkc.zds.resource.dto.GroupDto;
+import com.rkc.zds.resource.entity.GroupEntity;
 import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
 import com.rkc.zds.resource.service.GroupService;
 
@@ -53,22 +53,22 @@ public class GroupController {
 	private int maxResults;
 
 	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Page<GroupDto>> findAllGroups(Pageable pageable, HttpServletRequest req) {
-		Page<GroupDto> page = groupService.findGroups(pageable);
+	public ResponseEntity<Page<GroupEntity>> findAllGroups(Pageable pageable, HttpServletRequest req) {
+		Page<GroupEntity> page = groupService.findGroups(pageable);
 		return new ResponseEntity<>(page, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<GroupDto> getGroup(@PathVariable int id, HttpServletRequest req) {
-		GroupDto group = groupService.getGroup(id);
+	public ResponseEntity<GroupEntity> getGroup(@PathVariable int id, HttpServletRequest req) {
+		GroupEntity group = groupService.getGroup(id);
 		return new ResponseEntity<>(group, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Page<GroupDto>> findAllByRsql(Pageable pageable, @RequestParam(value = "search") String search) {
+	public ResponseEntity<Page<GroupEntity>> findAllByRsql(Pageable pageable, @RequestParam(value = "search") String search) {
 	    Node rootNode = new RSQLParser().parse(search);
-	    Specification<GroupDto> spec = rootNode.accept(new CustomRsqlVisitor<GroupDto>());
-		Page<GroupDto> page = groupService.searchGroups(pageable, spec);
+	    Specification<GroupEntity> spec = rootNode.accept(new CustomRsqlVisitor<GroupEntity>());
+		Page<GroupEntity> page = groupService.searchGroups(pageable, spec);
 		return new ResponseEntity<>(page, HttpStatus.OK);
 	}
 	
@@ -78,9 +78,9 @@ public class GroupController {
 
 		ObjectMapper mapper = new ObjectMapper();
 
-		GroupDto groupDTO = new GroupDto();
+		GroupEntity groupDTO = new GroupEntity();
 		try {
-			groupDTO = mapper.readValue(jsonString, GroupDto.class);
+			groupDTO = mapper.readValue(jsonString, GroupEntity.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,9 +101,9 @@ public class GroupController {
 	public void updateGroup(@RequestBody String jsonString) {
 		ObjectMapper mapper = new ObjectMapper();
 
-		GroupDto group = new GroupDto();
+		GroupEntity group = new GroupEntity();
 		try {
-			group = mapper.readValue(jsonString, GroupDto.class);
+			group = mapper.readValue(jsonString, GroupEntity.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

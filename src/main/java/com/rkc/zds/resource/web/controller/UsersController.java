@@ -4,13 +4,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rkc.zds.resource.dto.AuthorityDto;
-import com.rkc.zds.resource.dto.ContactDto;
-import com.rkc.zds.resource.dto.EMailDto;
-import com.rkc.zds.resource.dto.GroupDto;
 import com.rkc.zds.resource.dto.LoginDto;
 import com.rkc.zds.resource.dto.Profile;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.AuthorityEntity;
+import com.rkc.zds.resource.entity.ContactEntity;
+import com.rkc.zds.resource.entity.EMailEntity;
+import com.rkc.zds.resource.entity.GroupEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
 import com.rkc.zds.resource.service.UserService;
 
@@ -48,15 +48,15 @@ public class UsersController {
 	private PasswordEncoder passwordEncoder;
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Page<UserDto>> findAllUsers(Pageable pageable, HttpServletRequest req) {
-		Page<UserDto> page = userService.findUsers(pageable);
-		ResponseEntity<Page<UserDto>> response = new ResponseEntity<>(page, HttpStatus.OK);
+	public ResponseEntity<Page<UserEntity>> findAllUsers(Pageable pageable, HttpServletRequest req) {
+		Page<UserEntity> page = userService.findUsers(pageable);
+		ResponseEntity<Page<UserEntity>> response = new ResponseEntity<>(page, HttpStatus.OK);
 		return response;
 	}
 
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserDto> getUser(@PathVariable int id, HttpServletRequest req) {
-		UserDto user = userService.getUser(id);
+	public ResponseEntity<UserEntity> getUser(@PathVariable int id, HttpServletRequest req) {
+		UserEntity user = userService.getUser(id);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
@@ -68,7 +68,7 @@ public class UsersController {
 	}
 
 	@RequestMapping(value = "/users/password", method = RequestMethod.POST)
-	public UserDto changePassword(@RequestBody LoginDto loginDTO, HttpServletRequest request,
+	public UserEntity changePassword(@RequestBody LoginDto loginDTO, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
 		return userService.changePassword(loginDTO, request, response);
@@ -81,9 +81,9 @@ public class UsersController {
 
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-		UserDto userDTO = new UserDto();
+		UserEntity userDTO = new UserEntity();
 		try {
-			userDTO = mapper.readValue(jsonString, UserDto.class);
+			userDTO = mapper.readValue(jsonString, UserEntity.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -102,7 +102,7 @@ public class UsersController {
 		userDTO.setEnabled(1);
 		userService.saveUser(userDTO);
 
-		AuthorityDto role = new AuthorityDto();
+		AuthorityEntity role = new AuthorityEntity();
 		role.setUserName(userDTO.getLogin());
 		role.setAuthority("ROLE_USER");
 
@@ -112,14 +112,14 @@ public class UsersController {
 	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/users", method = RequestMethod.PUT, consumes = {
 			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
-	public UserDto updateUser(@RequestBody String jsonString) {
+	public UserEntity updateUser(@RequestBody String jsonString) {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 		// mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
 		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-		UserDto user = new UserDto();
+		UserEntity user = new UserEntity();
 		try {
-			user = mapper.readValue(jsonString, UserDto.class);
+			user = mapper.readValue(jsonString, UserEntity.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,7 +131,7 @@ public class UsersController {
 			e.printStackTrace();
 		}
 
-		UserDto userTemp = userService.getUser(user.getId());
+		UserEntity userTemp = userService.getUser(user.getId());
 		if (!userTemp.getPassword().equals(user.getPassword())) {
 			if (user.getPassword() != null) {
 				user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -155,26 +155,26 @@ public class UsersController {
 	}
 
 	@RequestMapping(value = "/users/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Page<UserDto>> findAllByRsql(Pageable pageable,
+	public ResponseEntity<Page<UserEntity>> findAllByRsql(Pageable pageable,
 			@RequestParam(value = "search") String search) {
 		Node rootNode = new RSQLParser().parse(search);
-		Specification<UserDto> spec = rootNode.accept(new CustomRsqlVisitor<UserDto>());
+		Specification<UserEntity> spec = rootNode.accept(new CustomRsqlVisitor<UserEntity>());
 		// return dao.findAll(spec);
-		Page<UserDto> page = userService.searchUsers(pageable, spec);
+		Page<UserEntity> page = userService.searchUsers(pageable, spec);
 		return new ResponseEntity<>(page, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/users/authorities", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Page<AuthorityDto>> findAllAuthorities(@RequestBody String userName, Pageable pageable,
+	public ResponseEntity<Page<AuthorityEntity>> findAllAuthorities(@RequestBody String userName, Pageable pageable,
 			HttpServletRequest req) {
-		Page<AuthorityDto> page = userService.findAuthorities(pageable, userName);
-		ResponseEntity<Page<AuthorityDto>> response = new ResponseEntity<>(page, HttpStatus.OK);
+		Page<AuthorityEntity> page = userService.findAuthorities(pageable, userName);
+		ResponseEntity<Page<AuthorityEntity>> response = new ResponseEntity<>(page, HttpStatus.OK);
 		return response;
 	}
 	
 	@RequestMapping(value = "/users/authorities/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<AuthorityDto> getAuthority(@PathVariable int id, HttpServletRequest req) {
-		AuthorityDto user = userService.getAuthority(id);
+	public ResponseEntity<AuthorityEntity> getAuthority(@PathVariable int id, HttpServletRequest req) {
+		AuthorityEntity user = userService.getAuthority(id);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
@@ -185,9 +185,9 @@ public class UsersController {
 
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-		AuthorityDto authority = new AuthorityDto();
+		AuthorityEntity authority = new AuthorityEntity();
 		try {
-			authority = mapper.readValue(jsonString, AuthorityDto.class);
+			authority = mapper.readValue(jsonString, AuthorityEntity.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -208,9 +208,9 @@ public class UsersController {
 	public void updateAuthority(@RequestBody String jsonString) {
 		ObjectMapper mapper = new ObjectMapper();
 
-		AuthorityDto authority = new AuthorityDto();
+		AuthorityEntity authority = new AuthorityEntity();
 		try {
-			authority = mapper.readValue(jsonString, AuthorityDto.class);
+			authority = mapper.readValue(jsonString, AuthorityEntity.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

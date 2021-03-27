@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rkc.zds.resource.dto.ArticleCommentDto;
-import com.rkc.zds.resource.dto.ArticleDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.ArticleCommentEntity;
+import com.rkc.zds.resource.entity.ArticleEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.NoAuthorizationException;
 import com.rkc.zds.resource.exception.ResourceNotFoundException;
 import com.rkc.zds.resource.model.CommentData;
@@ -65,17 +65,17 @@ public class CommentsApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 		
-		UserDto user = null;
+		UserEntity user = null;
 		
 		if(userDto.isPresent()) {
 			user = userDto.get();
 		}
 
-		ArticleDto article = findArticle(id);
+		ArticleEntity article = findArticle(id);
 
-		ArticleCommentDto comment = new ArticleCommentDto();
+		ArticleCommentEntity comment = new ArticleCommentEntity();
 
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -96,7 +96,7 @@ public class CommentsApi {
 	@RequestMapping(value = "/api/articles/{articleId}/comments", method = RequestMethod.GET,  produces = { "application/json;charset=UTF-8" })
 	public ResponseEntity getComments(@PathVariable("articleId") Integer articleId) {
 		
-		ArticleDto article = findArticle(articleId);
+		ArticleEntity article = findArticle(articleId);
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -105,9 +105,9 @@ public class CommentsApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 		
-		UserDto user = null;
+		UserEntity user = null;
 		
 		if(userDto.isPresent()) {
 			user = userDto.get();
@@ -123,7 +123,7 @@ public class CommentsApi {
 
 	@RequestMapping(path = "/api/articles/{articleId}/comments/{commentId}", method = RequestMethod.DELETE)
 	public ResponseEntity deleteComment(@PathVariable("articleId") Integer articleId, @PathVariable("commentId") Integer commentId) {
-		ArticleDto article = findArticle(articleId);
+		ArticleEntity article = findArticle(articleId);
 			
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -132,14 +132,14 @@ public class CommentsApi {
         AccessToken accessToken = session.getToken();
         String userName = accessToken.getPreferredUsername();
 
-		Optional<UserDto> userDto = userRepository.findByUserName(userName);
+		Optional<UserEntity> userDto = userRepository.findByUserName(userName);
 		
-		UserDto user = null;
+		UserEntity user = null;
 		if(userDto.isPresent()) {
 			user = userDto.get();
 		}
 		
-		final UserDto userTemp = user;
+		final UserEntity userTemp = user;
 		
 		return commentRepository.findByArticleIdAndId(article.getId(), commentId).map(comment -> {
 			if (!AuthorizationService.canWriteComment(userTemp, article, comment)) {
@@ -150,7 +150,7 @@ public class CommentsApi {
 		}).orElseThrow(ResourceNotFoundException::new);
 	}
 
-	private ArticleDto findArticle(Integer id) {
+	private ArticleEntity findArticle(Integer id) {
 		return articleRepository.findById(id).map(article -> article).orElseThrow(ResourceNotFoundException::new);
 	}
 

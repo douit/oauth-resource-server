@@ -8,7 +8,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.rkc.zds.resource.dto.ArticleFollowDto;
+import com.rkc.zds.resource.entity.ArticleFollowEntity;
 import com.rkc.zds.resource.repository.ArticleFollowRepository;
 import com.rkc.zds.resource.service.UserRelationshipQueryService;
 
@@ -20,7 +20,7 @@ public class UserRelationshipQueryServiceImpl implements UserRelationshipQuerySe
 
 	@Override
 	public boolean isUserFollowing(Integer userId, Integer anotherUserId) {
-		ArticleFollowDto dto = followRepository.findByUserIdAndFollowId(userId, anotherUserId);
+		ArticleFollowEntity dto = followRepository.findByUserIdAndFollowId(userId, anotherUserId);
 		if (dto == null) {
 			return false;
 		}
@@ -32,7 +32,7 @@ public class UserRelationshipQueryServiceImpl implements UserRelationshipQuerySe
 		Set<Integer> set = new HashSet<Integer>();
 
 		// List<ArticleFollowDto> followDtoList = null;
-		ArticleFollowDto followDto = null;
+		ArticleFollowEntity followDto = null;
 		for (Integer followId : list) {
 			followDto = followRepository.findByUserIdAndFollowId(userId, followId);
 			if (followDto != null) {
@@ -47,7 +47,7 @@ public class UserRelationshipQueryServiceImpl implements UserRelationshipQuerySe
 	public List<Integer> followedUsers(Integer userId) {
 
 		List<Integer> users = new ArrayList<Integer>();
-		for (ArticleFollowDto article : followRepository.findByUserId(userId)) {
+		for (ArticleFollowEntity article : followRepository.findByUserId(userId)) {
 			users.add(article.getFollowId());
 		}
 		// add this user to the list

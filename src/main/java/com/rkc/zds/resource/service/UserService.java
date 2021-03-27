@@ -9,41 +9,41 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.rkc.zds.resource.dto.AuthorityDto;
 import com.rkc.zds.resource.dto.LoginDto;
-import com.rkc.zds.resource.dto.UserDto;
+import com.rkc.zds.resource.entity.AuthorityEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.UserAlreadyExistException;
 
 public interface UserService {
-    Page<UserDto> findUsers(Pageable pageable);
+    Page<UserEntity> findUsers(Pageable pageable);
     
-	UserDto findByUserName(String userName);
+	UserEntity findByUserName(String userName);
     
-	UserDto findById(Integer id);
+	UserEntity findById(Integer id);
 
-	List<UserDto> getUsers();
+	List<UserEntity> getUsers();
 	
-    UserDto getUser(int id);  
+    UserEntity getUser(int id);  
 	  
-    public void updateUser(UserDto user);
+    public void updateUser(UserEntity user);
     
 	void deleteUser(int id);
     
-    public void saveUser(UserDto user);
+    public void saveUser(UserEntity user);
 
-	UserDto registerNewUserAccount(UserDto accountDto) throws UserAlreadyExistException;
+	UserEntity registerNewUserAccount(UserEntity accountDto) throws UserAlreadyExistException;
 
-	Page<UserDto> searchUsers(Pageable pageable, Specification<UserDto> spec);
+	Page<UserEntity> searchUsers(Pageable pageable, Specification<UserEntity> spec);
 
-	UserDto changePassword(LoginDto loginDTO, HttpServletRequest request, HttpServletResponse response);
+	UserEntity changePassword(LoginDto loginDTO, HttpServletRequest request, HttpServletResponse response);
 
-	Page<AuthorityDto> findAuthorities(Pageable pageable, String userName);
+	Page<AuthorityEntity> findAuthorities(Pageable pageable, String userName);
 
-	AuthorityDto getAuthority(int id);
+	AuthorityEntity getAuthority(int id);
 	
-    public void saveAuthority(AuthorityDto role);
+    public void saveAuthority(AuthorityEntity role);
     
-    public void updateAuthority(AuthorityDto authority);
+    public void updateAuthority(AuthorityEntity authority);
 
 	void deleteAuthority(int id);
 

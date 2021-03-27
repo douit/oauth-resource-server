@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.dto;
+package com.rkc.zds.resource.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "PCM_ARTICLE_FOLLOWS")
-public class ArticleFollowDto implements java.io.Serializable {
+public class ArticleFollowEntity implements java.io.Serializable {
 	/**
 	 * 
 	 */
