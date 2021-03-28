@@ -46,7 +46,7 @@ import com.rkc.zds.resource.service.ArticleReadService;
 @CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
 @RestController
 @RequestMapping(path = "/api/articles")
-public class ArticlesApi {
+public class ArticlesController {
 	private ArticleRepository articleRepository;
 	private ArticleQueryService articleQueryService;
 	private ArticleReadService articleReadService;
@@ -61,7 +61,7 @@ public class ArticlesApi {
 	ArticleTagArticleRepository tagArticleRepository;
 
 	@Autowired
-	public ArticlesApi(ArticleRepository articleRepository, ArticleQueryService articleQueryService,
+	public ArticlesController(ArticleRepository articleRepository, ArticleQueryService articleQueryService,
 			ArticleReadService articleReadService) {
 		this.articleRepository = articleRepository;
 		this.articleQueryService = articleQueryService;

@@ -31,7 +31,7 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
 @RestController
 @RequestMapping(path = "/api/profiles/{userName:.+}")
-public class ProfileApi {
+public class ProfileController {
     private ProfileQueryService profileQueryService;
     private UserRepository userRepository;
 
@@ -39,7 +39,7 @@ public class ProfileApi {
     ArticleFollowRepository followRepository;
     
     @Autowired
-    public ProfileApi(ProfileQueryService profileQueryService, UserRepository userRepository) {
+    public ProfileController(ProfileQueryService profileQueryService, UserRepository userRepository) {
         this.profileQueryService = profileQueryService;
         this.userRepository = userRepository;
     }

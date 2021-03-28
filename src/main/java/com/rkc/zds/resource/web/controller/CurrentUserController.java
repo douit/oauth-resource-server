@@ -34,12 +34,12 @@ import com.rkc.zds.resource.service.UserQueryService;
 @CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
 @RestController
 @RequestMapping(path = "/api/user")
-public class CurrentUserApi {
+public class CurrentUserController {
 	private UserQueryService userQueryService;
 	private UserRepository userRepository;
 
 	@Autowired
-	public CurrentUserApi(UserQueryService userQueryService, UserRepository userRepository) {
+	public CurrentUserController(UserQueryService userQueryService, UserRepository userRepository) {
 		this.userQueryService = userQueryService;
 		this.userRepository = userRepository;
 	}

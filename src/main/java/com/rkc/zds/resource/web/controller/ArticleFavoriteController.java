@@ -30,7 +30,7 @@ import com.rkc.zds.resource.service.ArticleQueryService;
 @CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
 @RestController
 @RequestMapping(path = "/api/articles/{id}/favorite")
-public class ArticleFavoriteApi {
+public class ArticleFavoriteController {
 	private ArticleFavoriteRepository articleFavoriteRepository;
 	private ArticleRepository articleRepository;
 	private ArticleQueryService articleQueryService;
@@ -39,7 +39,7 @@ public class ArticleFavoriteApi {
 	UserRepository userRepository;
 
 	@Autowired
-	public ArticleFavoriteApi(ArticleFavoriteRepository articleFavoriteRepository, ArticleRepository articleRepository,
+	public ArticleFavoriteController(ArticleFavoriteRepository articleFavoriteRepository, ArticleRepository articleRepository,
 			ArticleQueryService articleQueryService) {
 		this.articleFavoriteRepository = articleFavoriteRepository;
 		this.articleRepository = articleRepository;

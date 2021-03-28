@@ -35,7 +35,7 @@ import com.rkc.zds.resource.service.TagsQueryService;
 @CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
 @RestController
 @RequestMapping(path = "/api/tags")
-public class TagsApi {
+public class TagsController {
 		
 	@Autowired
 	UserRepository userRepository;
@@ -52,7 +52,7 @@ public class TagsApi {
     private TagsQueryService tagsQueryService;
 
     @Autowired
-    public TagsApi(TagsQueryService tagsQueryService) {
+    public TagsController(TagsQueryService tagsQueryService) {
         this.tagsQueryService = tagsQueryService;
     }
 

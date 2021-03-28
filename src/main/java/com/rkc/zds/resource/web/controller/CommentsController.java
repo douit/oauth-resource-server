@@ -37,7 +37,7 @@ import com.rkc.zds.resource.service.CommentQueryService;
 @CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
 @RestController
 
-public class CommentsApi {
+public class CommentsController {
 	private ArticleRepository articleRepository;
 	private ArticleCommentRepository commentRepository;
 	private CommentQueryService commentQueryService;
@@ -46,7 +46,7 @@ public class CommentsApi {
 	UserRepository userRepository;
 
 	@Autowired
-	public CommentsApi(ArticleRepository articleRepository, ArticleCommentRepository commentRepository,
+	public CommentsController(ArticleRepository articleRepository, ArticleCommentRepository commentRepository,
 			CommentQueryService commentQueryService) {
 		this.articleRepository = articleRepository;
 		this.commentRepository = commentRepository;
