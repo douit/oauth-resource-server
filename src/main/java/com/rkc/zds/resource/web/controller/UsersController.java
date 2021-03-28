@@ -132,11 +132,17 @@ public class UsersController {
 		}
 
 		UserEntity userTemp = userService.getUser(user.getId());
+		
+		// for this application, passwords are stored in keycloak
+		// leave passwords alone to allow legacy app interopability
+		/*
 		if (!userTemp.getPassword().equals(user.getPassword())) {
 			if (user.getPassword() != null) {
 				user.setPassword(passwordEncoder.encode(user.getPassword()));
 			}
 		}
+		*/
+		
 		user.setEnabled(1);
 		user.setAuthorities(userTemp.getAuthorities());
 		userService.updateUser(user);
