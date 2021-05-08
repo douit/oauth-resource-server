@@ -1,6 +1,7 @@
 package com.rkc.zds.resource.web.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -175,6 +176,43 @@ public class ContactController {
 		emailService.sendEMail(emailSend);
 	}
 
+	@RequestMapping(value = "/email/system/send", method = RequestMethod.POST, consumes = {
+			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
+	public void sendSystemEmailToContacts(@RequestBody String jsonString) {
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		EMailSend emailSend = new EMailSend();
+		try {
+			emailSend = mapper.readValue(jsonString, EMailSend.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		List<ContactEntity> contactList = contactService.findAll();
+
+		for (ContactEntity contact : contactList) {
+
+			List<EMailEntity> emailList = emailService.findAllByContactId(contact.getId());
+
+			for (EMailEntity email : emailList) {
+
+				// EMailEntity temp = email.getEmail();
+				emailSend.setEmailList(email.getEmail());
+
+				emailService.sendEMail(emailSend);
+
+			}
+		}
+	}
+
 	@RequestMapping(value = "/phone/{contactId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Page<PhoneEntity>> findPhones(@PathVariable int contactId, Pageable pageable,
 			HttpServletRequest req) {
@@ -283,7 +321,7 @@ public class ContactController {
 
 		ContactEntity dto = contactService.saveContact(contactDTO);
 		this.contactId = dto.getId();
-		//post();
+		// post();
 		return dto;
 	}
 
@@ -316,20 +354,20 @@ public class ContactController {
 		contactService.updateContact(contact);
 
 	}
-	
+
 	@MessageMapping("/contacts/update")
 	@SendTo("/topic/contacts/updated")
 	public String update(String post) {
 		return post;
 	}
-	
+
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String deleteContact(@PathVariable int id) {
 		contactService.deleteContact(id);
 		return Integer.toString(id);
 	}
-	
+
 	@MessageMapping("/contacts/delete")
 	@SendTo("/topic/contacts/deleted")
 	public String delete(String post) {

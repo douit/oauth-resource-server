@@ -20,6 +20,8 @@ import org.springframework.context.annotation.Bean;
 @Service
 public interface ContactService {
 
+    List<ContactEntity> findAll();
+    
     Page<ContactEntity> findContacts(Pageable pageable);
 
     Page<ContactEntity> searchContacts(String name);

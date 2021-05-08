@@ -1,5 +1,6 @@
 package com.rkc.zds.resource.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.mail.MessagingException;
@@ -21,6 +22,11 @@ public class EMailServiceImpl implements EMailService {
 
 	@Autowired
 	private EMailRepository eMailRepo;
+	
+	@Override
+	public List<EMailEntity> findAllByContactId(int contactId) {
+		return eMailRepo.findByContactId(contactId);
+	}
 
 	@Override
 	public Page<EMailEntity> findEMails(Pageable pageable, int contactId) {

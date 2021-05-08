@@ -38,6 +38,11 @@ public class ContactServiceImpl implements ContactService {
 	private GroupMemberRepository groupMemberRepo;
 	
 	@Override
+	public List<ContactEntity> findAll() {
+		return contactRepo.findAll();
+	}
+	
+	@Override
 	public Page<ContactEntity> findContacts(Pageable pageable) {
 
 		return contactRepo.findAll(pageable);
