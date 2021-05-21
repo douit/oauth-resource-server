@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Sat May 08 17:36:58 EDT 2021:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0179-4de9-7e12-00000ff35d28 
-on database directory /_/data/pcm/derbyDB with class loader sun.misc.Launcher$AppClassLoader@4e0e2f2a 
-Loaded from file:/home/rcampion/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
+Fri May 21 08:43:49 EDT 2021:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0179-8ef4-0885-00000bc663e8 
+on database directory /_/data/pcm/derbyDB with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
+Loaded from file:/home/rcampion/.m2/repository/org/apache/derby/derby/10.14.2.0/derby-10.14.2.0.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_241-b07
 user.dir=/home/rcampion/git/oauth-resource-server
 os.name=Linux
 os.arch=amd64
-os.version=5.4.0-72-generic
+os.version=5.4.0-73-generic
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''

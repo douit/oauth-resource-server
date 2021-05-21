@@ -10,7 +10,9 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -25,10 +27,13 @@ import org.springframework.stereotype.Service;
 
 import com.rkc.zds.resource.dto.LoginDto;
 import com.rkc.zds.resource.entity.AuthorityEntity;
+import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.UserAlreadyExistException;
 import com.rkc.zds.resource.repository.AuthorityRepository;
+import com.rkc.zds.resource.repository.ContactRepository;
 import com.rkc.zds.resource.repository.UserRepository;
+import com.rkc.zds.resource.service.ContactService;
 import com.rkc.zds.resource.service.UserService;
 
 @Service
@@ -38,10 +43,16 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 
 	@Autowired
+	private ContactRepository contactRepository;
+	
+	@Autowired
 	private AuthorityRepository authorityRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private ContactService contactService;
 
 	@Override
 	public UserEntity findByUserName(String userName) {
@@ -136,9 +147,8 @@ public class UserServiceImpl implements UserService {
 		role.setAuthority("ROLE_USER");
 
 		authorityRepository.save(role);
-
-		// String realm = "zdslogic";
-		String realm = "master";
+		
+		linkUsertoContact(user);
 
 		Keycloak kc = Keycloak.getInstance("https://www.zdslogic.com/keycloak/auth", "zdslogic", "richard.campion",
 				"ArcyAdmin8246+", "admin-cli");		
@@ -182,6 +192,39 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	private void linkUsertoContact(UserEntity user) {
+		List<ContactEntity> contacts = contactService.searchContactsByLastNameAndFirstName(user.getLastName(), user.getFirstName());
+		
+		if(contacts.size()==1) {
+			ContactEntity contact = contacts.get(0);
+			
+			user.setContactId(contact.getId());
+			
+			userRepository.save(user);
+			
+			contact.setUserId(user.getId());
+			
+			contactRepository.save(contact);
+			
+		} else if(contacts.size()==0) {
+			
+			ContactEntity contact = new ContactEntity();
+			
+			contact.setFirstName(user.getFirstName());
+			contact.setLastName(user.getLastName());
+			contact.setCompany("Unknown");
+			contact.setTitle("Unknown");
+			contact.setUserId(user.getId());
+			
+			contact = contactRepository.save(contact);
+			
+			user.setContactId(contact.getId());
+			
+			userRepository.save(user);
+			
+		}
+	}
+
 	private boolean loginExist(final String login) {
 
 		UserEntity user = userRepository.findByLogin(login);
@@ -200,9 +243,9 @@ public class UserServiceImpl implements UserService {
 
 	public UserEntity changePassword(LoginDto loginDTO, HttpServletRequest request, HttpServletResponse response) {
 		Optional<UserEntity> user = userRepository.findByUserName(loginDTO.getLogin());
-		
+
 		UserEntity userDto = null;
-		
+
 		if (user.isPresent()) {
 			userDto = user.get();
 

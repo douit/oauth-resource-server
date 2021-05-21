@@ -97,6 +97,40 @@ public class FileUploadController {
             return "Unable to upload. File is empty.";
         }
     }
+
+    @PostMapping("/uploadChatFile")
+    public UploadChatFileResponse uploadChatFile(HttpServletRequest request, HttpServletResponse response, @RequestParam("file") MultipartFile file) {
+
+    	String participantId = request.getParameter("ng-chat-participant-id");
+    	int participantIdInt = Integer.parseInt(participantId);
+    	
+    	//file.se
+    	String fileName = fileStorageService.storeChatFile(request,file);
+/*
+        String fileDownloadUri = ServletUr+iComponentsBuilder.fromCurrentContextPath()
+               .path("/downloadFile/")
+                .path(fileName)
+                .toUriString();
+*/
+        String fileDownloadUri = "https://www.zdslogic.com/data/files/uploads/"+fileName;
+        
+        //return new UploadFileResponse(fileName, fileDownloadUri,
+        //        file.getContentType(), file.getSize());
+        
+        return new UploadChatFileResponse(2, participantIdInt, fileName, file.getContentType(), file.getSize(),
+        		fileDownloadUri);
+/*
+        let message = {
+        	      type: 2, // MessageType.File = 2
+        	      //fromId: ngChatSenderUserId, fromId will be set by the angular component after receiving the http response
+        	      toId: ngChatDestinataryUserId,
+        	      message: file.name,
+        	      mimeType: file.type,
+        	      fileSizeInBytes: file.size,
+        	      downloadUrl:  `http://localhost:3000/Uploads/${file.name}`
+        	    };
+*/
+    }
     
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(HttpServletRequest request, HttpServletResponse response, @RequestParam("file") MultipartFile file) {

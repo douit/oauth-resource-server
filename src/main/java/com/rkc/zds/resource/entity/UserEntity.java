@@ -32,15 +32,6 @@ public class UserEntity implements java.io.Serializable  {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-    public UserEntity() {
-    }
-    
-	public UserEntity(String userName, String password, int enabled) {
-		this.userName = userName;
-		this.password = password;
-		this.enabled = enabled;
-	}
-
 	@Column(name="CONTACT_ID")
 	private Integer contactId;
 
@@ -50,9 +41,6 @@ public class UserEntity implements java.io.Serializable  {
 	@Column(name="USERNAME")
 	private String userName;
 
-	@Column(name="ENABLED")	
-	private int enabled;
-
 	@Column(name="PASSWORD")	
 	private String password;
 	
@@ -61,6 +49,9 @@ public class UserEntity implements java.io.Serializable  {
 	
 	@Column(name="LASTNAME")	
 	private String lastName;
+	
+	@Column(name="ENABLED")	
+	private Integer enabled;
 	
 	@Column(name="EMAIL")	
     private String email;
@@ -116,11 +107,11 @@ public class UserEntity implements java.io.Serializable  {
 		this.userName = userName;
 	}
 
-	public int getEnabled() {
+	public Integer getEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(int enabled) {
+	public void setEnabled(Integer enabled) {
 		this.enabled = enabled;
 	}
 
@@ -272,7 +263,15 @@ public class UserEntity implements java.io.Serializable  {
 		this.authorities = set;
 	}
 */
-
+    public UserEntity() {
+    }
+    
+	public UserEntity(String userName, String password, int enabled) {
+		this.userName = userName;
+		this.password = password;
+		this.enabled = enabled;
+	}
+	
 	public void update(String email, String userName, String password, String bio, String image) {
 		this.email = email;
 		this.userName = userName;

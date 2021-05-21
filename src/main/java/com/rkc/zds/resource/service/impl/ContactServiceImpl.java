@@ -18,9 +18,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.rkc.zds.resource.entity.ContactEntity;
+import com.rkc.zds.resource.entity.EMailEntity;
 import com.rkc.zds.resource.entity.GroupMemberEntity;
+import com.rkc.zds.resource.entity.PhoneEntity;
 import com.rkc.zds.resource.repository.ContactRepository;
+import com.rkc.zds.resource.repository.EMailRepository;
 import com.rkc.zds.resource.repository.GroupMemberRepository;
+import com.rkc.zds.resource.repository.PhoneRepository;
 import com.rkc.zds.resource.service.ContactService;
 import com.rkc.zds.resource.util.SearchCriteria;
 
@@ -36,6 +40,12 @@ public class ContactServiceImpl implements ContactService {
 
 	@Autowired
 	private GroupMemberRepository groupMemberRepo;
+
+	@Autowired
+	private EMailRepository eMailRepo;
+	
+	@Autowired
+	private PhoneRepository phoneRepo;
 	
 	@Override
 	public List<ContactEntity> findAll() {
@@ -95,34 +105,55 @@ public class ContactServiceImpl implements ContactService {
 		else
 			return null;
 	}
-
+	
 	@Override
-	public Page<ContactEntity> searchContacts(String name) {
-
-		final PageRequest pageRequest = PageRequest.of(0, 10, sortByNameASC());
-
-		return contactRepo.findByLastNameIgnoreCaseLike(pageRequest, "%" + name + "%");
-	}
-
-	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ContactEntity saveContact(ContactEntity contact) {
-
-		return contactRepo.save(contact);
-	}
-
-	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updateContact(ContactEntity contact) {
 
 		contactRepo.saveAndFlush(contact);
 	}
+	
+	@Override
+	public Page<ContactEntity> searchContactsByLastName(String lastName) {
 
+		final PageRequest pageRequest = PageRequest.of(0, 10, sortByNameASC());
+
+		return contactRepo.findByLastNameIgnoreCaseLike(pageRequest, "%" + lastName + "%");
+	}
+
+	@Override
+	public List<ContactEntity> searchContactsByLastNameAndFirstName(String lastName, String firstName) {
+
+		//final PageRequest pageRequest = PageRequest.of(0, 10, sortByNameASC());
+
+		return contactRepo.findByLastNameIgnoreCaseLikeAndFirstNameIgnoreCaseLike( 
+				"%" + lastName + "%", "%" + firstName + "%");
+	}
+	
+	@Override
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ContactEntity saveContact(ContactEntity contact) {
+
+		return contactRepo.save(contact);
+	}
 	
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteContact(int id) {
-
+		
+		// delete the emails	
+		List<EMailEntity> emailList = eMailRepo.findByContactId(id);
+		for(EMailEntity email:emailList) {
+			eMailRepo.delete(email);
+		}
+		
+		// delete the phones
+		List<PhoneEntity> phoneList = phoneRepo.findByContactId(id);
+		for(PhoneEntity phone:phoneList) {
+			phoneRepo.delete(phone);
+		}
+		
+		// delete the contact
 		contactRepo.deleteById(id);
 	}
 

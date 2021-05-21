@@ -27,14 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rkc.zds.resource.entity.GroupEntity;
 import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
+import com.rkc.zds.resource.entity.GroupEntity;
 import com.rkc.zds.resource.service.GroupService;
 
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
 
-@CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
+@CrossOrigin(origins = "http://localhost:8089")
 @RestController
 @RequestMapping(value = "/api/group")
 public class GroupController {

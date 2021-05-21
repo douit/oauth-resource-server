@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Optional;
-@CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
+@CrossOrigin(origins = "http://localhost:8089")
 @RestController
 @RequestMapping(path = "/api/profiles/{userName:.+}")
 public class ProfileController {

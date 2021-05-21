@@ -18,11 +18,6 @@ import javax.persistence.Table;
 public class UserContactEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String firstName;
-	private String lastName;
-	private String title;
-	private String company;
-	
 	@Id
 	@Column(name="ID", unique = true, nullable = false)
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -35,43 +30,22 @@ public class UserContactEntity implements Serializable {
 	private int contactId;
 
 	@Column(name = "FIRSTNAME", nullable = false, length = 100)
-	public String getFirstName() {
-		return this.firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+	private String firstName;
 
 	@Column(name = "LASTNAME", nullable = false, length = 100)
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+	private String lastName;
 
 	@Column(name = "TITLE", length = 100)
-	public String getTitle() {
-		return this.title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
+	private String title;
 
 	@Column(name = "COMPANY", length = 100)
-	public String getCompany() {
-		return this.company;
-	}
+	private String company;
 
-	public void setCompany(String company) {
-		this.company = company;
-	}
+	@Column(name = "PRESENCE_IMAGE_URL", length = 100)
+	private String presenceImageUrl;
 	
-    public UserContactEntity() {
-    }
+	@Column(name="ENABLED")	
+	private Integer enabled;
 
 	public Integer getId() {
 		return this.id;
@@ -96,6 +70,57 @@ public class UserContactEntity implements Serializable {
 	public void setContactId(int contactId) {
 		this.contactId = contactId;
 	}
+	
+	public String getFirstName() {
+		return this.firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return this.lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getTitle() {
+		return this.title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getCompany() {
+		return this.company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getPresenceImageUrl() {
+		return this.presenceImageUrl;
+	}
+
+	public void setPresenceImageUrl(String presenceImageUrl) {
+		this.presenceImageUrl = presenceImageUrl;
+	}
+	
+	public Integer getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Integer enabled) {
+		this.enabled = enabled;
+	}
+	
+    public UserContactEntity() {
+    }
 	
 	@Override
 	public int hashCode() {

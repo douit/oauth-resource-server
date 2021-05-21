@@ -25,7 +25,7 @@ import com.rkc.zds.resource.entity.GroupMemberEntity;
 import com.rkc.zds.resource.service.ContactService;
 import com.rkc.zds.resource.service.GroupMemberService;
 
-@CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
+@CrossOrigin(origins = "http://localhost:8089")
 @RestController
 @RequestMapping(value = "/api/group/member")
 public class GroupMemberController {

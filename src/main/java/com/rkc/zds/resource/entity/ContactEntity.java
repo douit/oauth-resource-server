@@ -20,11 +20,39 @@ public class ContactEntity implements java.io.Serializable {
 	@Column(name="CONTACT_ID", unique = true, nullable = false)
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
+	
+	@Column(name = "USER_ID")	
 	private Integer userId;
+
+	@Column(name = "FIRSTNAME", nullable = false, length = 100)
 	private String firstName;
+
+	@Column(name = "LASTNAME", nullable = false, length = 100)
 	private String lastName;
+
+	@Column(name = "TITLE", length = 100)
 	private String title;
+
+	@Column(name = "COMPANY", length = 100)
 	private String company;
+	
+	@Column(name = "IMAGE_URL", length = 100)
+	private String imageURL;
+
+	@Column(name = "SKYPE", length = 100)
+	private String skype;
+
+	@Column(name = "TWITTER", length = 100)
+	private String twitter;
+
+	@Column(name = "NOTES", length = 100)
+	private String notes;
+	
+	@Column(name = "PRESENCE_IMAGE_URL", length = 100)
+	private String presenceImageUrl;
+	
+	@Column(name="ENABLED")	
+	private Integer enabled;
 
 	public ContactEntity() {
 	}
@@ -35,7 +63,12 @@ public class ContactEntity implements java.io.Serializable {
 		this.lastName = lastName;
 	}
 
-	public ContactEntity(int id, String firstName, String lastName, String title, String company) {
+	public ContactEntity(
+			int id, 
+			String firstName, 
+			String lastName, 
+			String title, 
+			String company) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -51,7 +84,6 @@ public class ContactEntity implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "USER_ID")
 	public Integer getUserId() {
 		return userId;
 	}
@@ -60,7 +92,6 @@ public class ContactEntity implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "FIRSTNAME", nullable = false, length = 100)
 	public String getFirstName() {
 		return this.firstName;
 	}
@@ -69,7 +100,6 @@ public class ContactEntity implements java.io.Serializable {
 		this.firstName = firstName;
 	}
 
-	@Column(name = "LASTNAME", nullable = false, length = 100)
 	public String getLastName() {
 		return this.lastName;
 	}
@@ -78,7 +108,6 @@ public class ContactEntity implements java.io.Serializable {
 		this.lastName = lastName;
 	}
 
-	@Column(name = "TITLE", length = 100)
 	public String getTitle() {
 		return this.title;
 	}
@@ -87,13 +116,60 @@ public class ContactEntity implements java.io.Serializable {
 		this.title = title;
 	}
 
-	@Column(name = "COMPANY", length = 100)
 	public String getCompany() {
 		return this.company;
 	}
 
 	public void setCompany(String company) {
 		this.company = company;
+	}
+	
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
+	}
+
+	public String getSkype() {
+		return skype;
+	}
+
+	public void setSkype(String skype) {
+		this.skype = skype;
+	}
+
+	public String getTwitter() {
+		return twitter;
+	}
+
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public String getPresenceImageUrl() {
+		return this.presenceImageUrl;
+	}
+
+	public void setPresenceImageUrl(String presenceImageUrl) {
+		this.presenceImageUrl = presenceImageUrl;
+	}
+
+	public Integer getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Integer enabled) {
+		this.enabled = enabled;
 	}
 
 	@Override

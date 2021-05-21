@@ -32,7 +32,7 @@ import com.rkc.zds.resource.repository.UserRepository;
 import com.rkc.zds.resource.service.AuthorizationService;
 import com.rkc.zds.resource.service.TagsQueryService;
 
-@CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
+@CrossOrigin(origins = "http://localhost:8089")
 @RestController
 @RequestMapping(path = "/api/tags")
 public class TagsController {

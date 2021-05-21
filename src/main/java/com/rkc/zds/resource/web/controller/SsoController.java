@@ -23,7 +23,6 @@ import com.rkc.zds.resource.service.UserService;
 import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.service.AuthenticationService;
 
-
 @CrossOrigin(origins = {"http://localhost:8089", "http://localhost:4200"})
 @RestController
 @RequestMapping(value = "/api")
@@ -67,7 +66,6 @@ public class SsoController {
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
 		authenticationService.logout(request, response);
 	}
-	
 	/*
 	 * @GetMapping("/sso/login") public Map<String, Object>
 	 * getUserInfo(@AuthenticationPrincipal Jwt principal) { return
@@ -80,4 +78,3 @@ public class SsoController {
 	 * principal.getClaimAsString("preferred_username")); }
 	 */
 }
-

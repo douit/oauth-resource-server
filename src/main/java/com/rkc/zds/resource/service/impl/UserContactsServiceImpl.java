@@ -46,6 +46,14 @@ public class UserContactsServiceImpl implements UserContactsService {
 
 		return list;
 	}
+	
+	@Override
+	public UserContactEntity findUserContact(int id) {
+
+		UserContactEntity userContact = userContactsRepo.findById(id);
+
+		return userContact;
+	}
 
 	@Override
 	public Page<ContactEntity> findFilteredContacts(Pageable pageable, int userId) {

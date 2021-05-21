@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.rkc.zds.resource.dto.LoginDto;
 import com.rkc.zds.resource.dto.Profile;
 import com.rkc.zds.resource.entity.AuthorityEntity;
@@ -36,7 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
+@CrossOrigin(origins = {"http://localhost:8089", "http://localhost:4200"})
 @RestController
 @RequestMapping(value = "/api")
 public class UsersController {
@@ -54,6 +55,17 @@ public class UsersController {
 		return response;
 	}
 
+	@RequestMapping(value = "/users/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Page<UserEntity>> findAllActiveUsers(Pageable pageable, HttpServletRequest req) {
+		String search = "isLoggedIn>0";
+	    //Node rootNode = new RSQLParser().parse("age>25");
+		Node rootNode = new RSQLParser().parse(search);
+		Specification<UserEntity> spec = rootNode.accept(new CustomRsqlVisitor<UserEntity>());
+		// return dao.findAll(spec);
+		Page<UserEntity> page = userService.searchUsers(pageable, spec);
+		return new ResponseEntity<>(page, HttpStatus.OK);
+	}
+	
 	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserEntity> getUser(@PathVariable int id, HttpServletRequest req) {
 		UserEntity user = userService.getUser(id);

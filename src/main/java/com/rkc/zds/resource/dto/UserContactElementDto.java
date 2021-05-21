@@ -9,6 +9,8 @@ public class UserContactElementDto {
 	private String lastName;
 	private String title;
 	private String company;
+	private String presenceImageUrl;
+	private Integer enabled;
 	
 	public int getId() {
 		return id;
@@ -51,6 +53,18 @@ public class UserContactElementDto {
 	}
 	public void setCompany(String company) {
 		this.company = company;
+	}	
+	public String getPresenceImageUrl() {
+		return presenceImageUrl;
+	}
+	public void setPresenceImageUrl(String presenceImageUrl) {
+		this.presenceImageUrl = presenceImageUrl;
+	}
+	public Integer getEnabled() {
+		return enabled;
+	}
+	public void setEnabled(Integer enabled) {
+		this.enabled = enabled;
 	}
 
 }

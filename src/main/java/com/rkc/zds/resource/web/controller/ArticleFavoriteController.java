@@ -27,7 +27,7 @@ import com.rkc.zds.resource.repository.ArticleRepository;
 import com.rkc.zds.resource.repository.UserRepository;
 import com.rkc.zds.resource.service.ArticleQueryService;
 
-@CrossOrigin(origins = "http://www.zdslogic-development.com:4200")
+@CrossOrigin(origins = "http://localhost:8089")
 @RestController
 @RequestMapping(path = "/api/articles/{id}/favorite")
 public class ArticleFavoriteController {

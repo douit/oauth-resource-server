@@ -13,5 +13,7 @@ public interface UserContactsRepository extends JpaRepository<UserContactEntity,
 	Page<UserContactEntity> findByUserId(Pageable pageable, int userId);
 
 	List<UserContactEntity> findByUserId(int userId);
+	
+	UserContactEntity findById(int id);
 	       
 }

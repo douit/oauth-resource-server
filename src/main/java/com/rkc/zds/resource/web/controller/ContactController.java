@@ -30,13 +30,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rkc.zds.resource.entity.AddressEntity;
 import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.EMailEntity;
 import com.rkc.zds.resource.entity.PhoneEntity;
 import com.rkc.zds.resource.model.EMailSend;
 import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
+import com.rkc.zds.resource.service.AddressService;
 import com.rkc.zds.resource.service.ContactService;
-import com.rkc.zds.resource.service.EMailService;
+import com.rkc.zds.resource.service.PcmEMailService;
 import com.rkc.zds.resource.service.PhoneService;
 
 import cz.jirutka.rsql.parser.RSQLParser;
@@ -45,6 +47,7 @@ import cz.jirutka.rsql.parser.ast.Node;
 @CrossOrigin(origins = "http://localhost:8089")
 @RestController
 @RequestMapping(value = "/api/contact")
+// @PreAuthorize("isAuthenticated()") 
 public class ContactController {
 
 	final static Logger LOG = LoggerFactory.getLogger(ContactController.class);
@@ -57,10 +60,13 @@ public class ContactController {
 	ContactService contactService;
 
 	@Autowired
-	EMailService emailService;
+	PcmEMailService emailService;
 
 	@Autowired
 	PhoneService phoneService;
+
+	@Autowired
+	AddressService addressService;
 
 //	@Autowired
 //	private MessageSource messageSource;
@@ -70,6 +76,20 @@ public class ContactController {
 
 	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Page<ContactEntity>> findAllContacts(Pageable pageable, HttpServletRequest req) {
+
+/*
+		// Temp -Reset all Contacts to emabled
+
+		List<ContactEntity> list = contactService.findAll();
+
+		for (ContactEntity contact : list) {
+			
+			contact.setEnabled(1);
+			
+			contactService.saveContact(contact);
+
+		}
+*/
 		Page<ContactEntity> page = contactService.findContacts(pageable);
 		ResponseEntity<Page<ContactEntity>> response = new ResponseEntity<>(page, HttpStatus.OK);
 		return response;
@@ -83,6 +103,7 @@ public class ContactController {
 		return response;
 	}
 
+//EMails
 	@RequestMapping(value = "/email/{contactId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Page<EMailEntity>> findEMails(@PathVariable int contactId, Pageable pageable,
 			HttpServletRequest req) {
@@ -97,7 +118,7 @@ public class ContactController {
 		return new ResponseEntity<>(email, HttpStatus.OK);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/email/email", method = RequestMethod.POST, consumes = {
 			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
 	public void createEmail(@RequestBody String jsonString) {
@@ -121,14 +142,14 @@ public class ContactController {
 		emailService.saveEMail(emailDTO);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/email/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String deleteEmail(@PathVariable int id) {
 		emailService.deleteEMail(id);
 		return Integer.toString(id);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/email/email", method = RequestMethod.PUT, consumes = {
 			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
 	public void updateEMail(@RequestBody String jsonString) {
@@ -152,7 +173,6 @@ public class ContactController {
 
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/email/send", method = RequestMethod.POST, consumes = {
 			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
 	public void sendEmail(@RequestBody String jsonString) {
@@ -213,6 +233,77 @@ public class ContactController {
 		}
 	}
 
+	// Address
+	@RequestMapping(value = "/address/{contactId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Page<AddressEntity>> findAddresss(@PathVariable int contactId, Pageable pageable,
+			HttpServletRequest req) {
+		Page<AddressEntity> page = addressService.findAddress(pageable, contactId);
+		ResponseEntity<Page<AddressEntity>> response = new ResponseEntity<>(page, HttpStatus.OK);
+		return response;
+	}
+
+	@RequestMapping(value = "/address/address/{addressId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<AddressEntity> getAddress(@PathVariable int addressId) {
+		AddressEntity address = addressService.getAddress(addressId);
+		return new ResponseEntity<>(address, HttpStatus.OK);
+	}
+
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/address/address", method = RequestMethod.POST, consumes = {
+			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
+	public void createAddress(@RequestBody String jsonString) {
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		AddressEntity addressDTO = new AddressEntity();
+		try {
+			addressDTO = mapper.readValue(jsonString, AddressEntity.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		addressService.saveAddress(addressDTO);
+	}
+
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/address/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String deleteAddress(@PathVariable int id) {
+		addressService.deleteAddress(id);
+		return Integer.toString(id);
+	}
+
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/address/address", method = RequestMethod.PUT, consumes = {
+			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
+	public void updateAddress(@RequestBody String jsonString) {
+		ObjectMapper mapper = new ObjectMapper();
+
+		AddressEntity address = new AddressEntity();
+		try {
+			address = mapper.readValue(jsonString, AddressEntity.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		addressService.updateAddress(address);
+
+	}
+
+//Phones
 	@RequestMapping(value = "/phone/{contactId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Page<PhoneEntity>> findPhones(@PathVariable int contactId, Pageable pageable,
 			HttpServletRequest req) {
@@ -227,7 +318,7 @@ public class ContactController {
 		return new ResponseEntity<>(phone, HttpStatus.OK);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/phone/phone", method = RequestMethod.POST, consumes = {
 			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
 	public void createPhone(@RequestBody String jsonString) {
@@ -251,14 +342,14 @@ public class ContactController {
 		phoneService.savePhone(phoneDTO);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/phone/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String deletePhone(@PathVariable int id) {
 		phoneService.deletePhone(id);
 		return Integer.toString(id);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/phone/phone", method = RequestMethod.PUT, consumes = {
 			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
 	public void updatePhone(@RequestBody String jsonString) {
@@ -298,7 +389,7 @@ public class ContactController {
 		return new ResponseEntity<>(page, HttpStatus.OK);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "", method = RequestMethod.POST, consumes = {
 			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
 	public ContactEntity createContact(@RequestBody String jsonString) {
@@ -331,7 +422,7 @@ public class ContactController {
 		return post;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "", method = RequestMethod.PUT, consumes = {
 			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
 	public void updateContact(@RequestBody String jsonString) {

@@ -17,6 +17,7 @@ class UpdateUserParam {
     private String userName = "";
     private String bio = "";
     private String image = "";	
+    private String isLoggedIn = "";	
 
     public String getEmail() {
 		return email;
@@ -47,6 +48,12 @@ class UpdateUserParam {
 	}
 	public void setImage(String image) {
 		this.image = image;
+	}
+	public String getIsLoggedIn() {
+		return isLoggedIn;
+	}
+	public void setIsLoggedIn(String isLoggedIn) {
+		this.isLoggedIn = isLoggedIn;
 	}
 
 }

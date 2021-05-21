@@ -19,7 +19,9 @@ public interface UserContactsService {
 
     public void addUserContact(UserContactEntity userContact);
     
-    public void saveUserContact(UserContactEntity userContact); 
+    public void saveUserContact(UserContactEntity userContact);
+    
+    public UserContactEntity findUserContact(int id);
     
 	void deleteUserContact(int id);
 }
