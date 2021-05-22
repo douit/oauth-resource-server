@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rkc.zds.resource.service.UserService;
 import com.rkc.zds.resource.entity.UserEntity;
-import com.rkc.zds.resource.service.AuthenticationService;
+import com.rkc.zds.resource.service.impl.AuthenticationServiceImpl;
+import com.rkc.zds.resource.service.UserService;
 
 @CrossOrigin(origins = {"http://localhost:8089", "http://localhost:4200"})
 @RestController
@@ -32,7 +32,7 @@ public class SsoController {
 	private UserService userService;
 
 	@Autowired
-	private AuthenticationService authenticationService;
+	private AuthenticationServiceImpl authenticationService;
 	
 	@RequestMapping(value = "/sso/login", method = RequestMethod.POST)
 	public UserEntity authenticate(@RequestBody String dummy, HttpServletRequest request, HttpServletResponse response)

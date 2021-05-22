@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +33,13 @@ import com.rkc.zds.resource.util.SearchCriteria;
 public class ContactServiceImpl implements ContactService {
 	private static final int PAGE_SIZE = 50;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+	@Autowired
+	@Qualifier("pcmEntityManager")
+	private EntityManager entityManager;
+	
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
     
 	@Autowired
 	private ContactRepository contactRepo;

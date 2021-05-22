@@ -32,8 +32,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rkc.zds.resource.entity.ResumeEntity;
 import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.ResumeData;
-import com.rkc.zds.resource.service.ResumeService;
 import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
+import com.rkc.zds.resource.service.ResumeService;
 
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;

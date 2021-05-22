@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.service;
+package com.rkc.zds.resource.service.impl;
 
 import java.security.Principal;
 import java.util.Collection;
@@ -41,9 +41,10 @@ import com.nimbusds.jwt.PlainJWT;
 import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.Message;
 import com.rkc.zds.resource.model.Node;
+import com.rkc.zds.resource.service.UserService;
 
 @Service
-public class AuthenticationService {
+public class AuthenticationServiceImpl {
 
 	public static final String CSRF_CLAIM_HEADER = "X-HMAC-CSRF";
 	public static final String ACCESS_TOKEN_COOKIE = "access_token";

@@ -1,5 +1,7 @@
 package com.rkc.zds.resource.service;
 
+import javax.persistence.EntityManager;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -8,6 +10,9 @@ import com.rkc.zds.resource.model.FollowRelation;
 
 @Mapper
 public interface UserMapper {
+	
+	public EntityManager getEntityManager();
+	
     void insert(@Param("user") UserEntity user);
 
     UserEntity findByUserName(@Param("userName") String userName);

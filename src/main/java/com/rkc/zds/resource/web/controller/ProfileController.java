@@ -6,8 +6,9 @@ import com.rkc.zds.resource.entity.ArticleFollowEntity;
 import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.ResourceNotFoundException;
 import com.rkc.zds.resource.repository.UserRepository;
-import com.rkc.zds.resource.repository.ArticleFollowRepository;
 import com.rkc.zds.resource.service.ProfileQueryService;
+import com.rkc.zds.resource.service.impl.ProfileQueryServiceImpl;
+import com.rkc.zds.resource.repository.ArticleFollowRepository;
 
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
@@ -32,14 +33,14 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "/api/profiles/{userName:.+}")
 public class ProfileController {
-    private ProfileQueryService profileQueryService;
+    private ProfileQueryServiceImpl profileQueryService;
     private UserRepository userRepository;
 
     @Autowired
     ArticleFollowRepository followRepository;
     
     @Autowired
-    public ProfileController(ProfileQueryService profileQueryService, UserRepository userRepository) {
+    public ProfileController(ProfileQueryServiceImpl profileQueryService, UserRepository userRepository) {
         this.profileQueryService = profileQueryService;
         this.userRepository = userRepository;
     }

@@ -36,10 +36,10 @@ import com.rkc.zds.resource.entity.EMailEntity;
 import com.rkc.zds.resource.entity.PhoneEntity;
 import com.rkc.zds.resource.model.EMailSend;
 import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
-import com.rkc.zds.resource.service.AddressService;
 import com.rkc.zds.resource.service.ContactService;
 import com.rkc.zds.resource.service.PcmEMailService;
 import com.rkc.zds.resource.service.PhoneService;
+import com.rkc.zds.resource.service.AddressService;
 
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;

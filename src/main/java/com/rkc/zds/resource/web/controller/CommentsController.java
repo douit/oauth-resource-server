@@ -32,7 +32,8 @@ import com.rkc.zds.resource.repository.ArticleCommentRepository;
 import com.rkc.zds.resource.repository.ArticleRepository;
 import com.rkc.zds.resource.repository.UserRepository;
 import com.rkc.zds.resource.service.AuthorizationService;
-import com.rkc.zds.resource.service.CommentQueryService;
+import com.rkc.zds.resource.service.impl.AuthorizationServiceImpl;
+import com.rkc.zds.resource.service.impl.CommentQueryServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:8089")
 @RestController
@@ -40,14 +41,14 @@ import com.rkc.zds.resource.service.CommentQueryService;
 public class CommentsController {
 	private ArticleRepository articleRepository;
 	private ArticleCommentRepository commentRepository;
-	private CommentQueryService commentQueryService;
+	private CommentQueryServiceImpl commentQueryService;
 
 	@Autowired
 	UserRepository userRepository;
 
 	@Autowired
 	public CommentsController(ArticleRepository articleRepository, ArticleCommentRepository commentRepository,
-			CommentQueryService commentQueryService) {
+			CommentQueryServiceImpl commentQueryService) {
 		this.articleRepository = articleRepository;
 		this.commentRepository = commentRepository;
 		this.commentQueryService = commentQueryService;
@@ -142,7 +143,7 @@ public class CommentsController {
 		final UserEntity userTemp = user;
 		
 		return commentRepository.findByArticleIdAndId(article.getId(), commentId).map(comment -> {
-			if (!AuthorizationService.canWriteComment(userTemp, article, comment)) {
+			if (!AuthorizationServiceImpl.canWriteComment(userTemp, article, comment)) {
 				throw new NoAuthorizationException();
 			}
 			commentRepository.delete(comment);

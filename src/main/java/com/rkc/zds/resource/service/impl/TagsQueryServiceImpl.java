@@ -1,14 +1,16 @@
-package com.rkc.zds.resource.service;
+package com.rkc.zds.resource.service.impl;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.rkc.zds.resource.service.TagReadService;
+
 @Service
-public class TagsQueryService {
+public class TagsQueryServiceImpl {
     private TagReadService tagReadService;
 
-    public TagsQueryService(TagReadService tagReadService) {
+    public TagsQueryServiceImpl(TagReadService tagReadService) {
         this.tagReadService = tagReadService;
     }
 

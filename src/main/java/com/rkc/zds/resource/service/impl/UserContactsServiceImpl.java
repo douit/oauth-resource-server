@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +22,15 @@ import com.rkc.zds.resource.service.UserContactsService;
 
 @Service
 public class UserContactsServiceImpl implements UserContactsService {
-
+	
+	@Autowired
+	@Qualifier("pcmEntityManager")
+	private EntityManager entityManager;
+	
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+	
 	@Autowired
 	private ContactRepository contactRepo;
 

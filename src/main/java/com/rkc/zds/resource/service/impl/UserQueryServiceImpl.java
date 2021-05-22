@@ -1,16 +1,17 @@
-package com.rkc.zds.resource.service;
+package com.rkc.zds.resource.service.impl;
 
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.rkc.zds.resource.model.UserData;
+import com.rkc.zds.resource.service.UserReadService;
 
 @Service
-public class UserQueryService  {
+public class UserQueryServiceImpl  {
     private UserReadService userReadService;
 
-    public UserQueryService(UserReadService userReadService) {
+    public UserQueryServiceImpl(UserReadService userReadService) {
         this.userReadService = userReadService;
     }
 

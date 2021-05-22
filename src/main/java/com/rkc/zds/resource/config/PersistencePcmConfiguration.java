@@ -1,5 +1,6 @@
 package com.rkc.zds.resource.config;
 
+import java.util.HashMap;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Primary;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -26,15 +28,20 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@ComponentScan(basePackages = { "com.rkc.zds", "com.rkc.zds.service" }, excludeFilters = { @ComponentScan.Filter(value = Controller.class, type = FilterType.ANNOTATION) })
-@EnableJpaRepositories(basePackages = { "com.rkc.zds" })
+@ComponentScan(basePackages = { "com.rkc.zds" }, excludeFilters = { @ComponentScan.Filter(value = Controller.class, type = FilterType.ANNOTATION) })
+@EnableJpaRepositories(
+	    basePackages = "com.rkc.zds.resource.repository", 
+	    entityManagerFactoryRef = "pcmEntityManager", 
+	    transactionManagerRef = "pcmTransactionManager"
+	)
 @EnableTransactionManagement
 @EnableSpringDataWebSupport
 @EnableWebSecurity
-public class AppConfig {
+public class PersistencePcmConfiguration {
 
 	@Bean
-	public DataSource dataSource() {
+	@Primary
+	public DataSource pcmDataSource() {
 		
 		EmbeddedDriver driver;
 		SimpleDriverDataSource db = null;
@@ -48,48 +55,51 @@ public class AppConfig {
 		
 		return db;
 	}    
+
+    @Bean(name = "pcmEntityManager")
+    @Primary
+    public LocalContainerEntityManagerFactoryBean pcmEntityManager() {
+        LocalContainerEntityManagerFactoryBean em
+          = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(pcmDataSource());
+        em.setPackagesToScan(
+          new String[] { "com.rkc.zds.resource.entity" });
+
+        HibernateJpaVendorAdapter vendorAdapter
+          = new HibernateJpaVendorAdapter();
+        em.setJpaVendorAdapter(vendorAdapter);
+        HashMap<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hbm2ddl.auto", "update");
+        properties.put("hibernate.dialect",
+        		DerbyTenSevenDialect.class.getName());
+        em.setJpaPropertyMap(properties);
+
+        return em;
+    }
     
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {
-        LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-        factoryBean.setDataSource(dataSource());
-        factoryBean.setPersistenceUnitName("contacts");
-
-        factoryBean.setJpaVendorAdapter(jpaVendorAdapter);
-        factoryBean.setPackagesToScan("com.rkc.zds");
-      
-		Properties jpaProperties = new Properties();
-		jpaProperties.put("hibernate.dialect", DerbyTenSevenDialect.class.getName());
-		jpaProperties.put("hibernate.show_sql", Boolean.TRUE.toString());
-		jpaProperties.put("hibernate.query.jpaql_strict_compliance", Boolean.FALSE.toString());
-		jpaProperties.put("hibernate.hbm2ddl.auto", "update");
-		jpaProperties.put("driverClassName","org.apache.derby.jdbc.EmbeddedDriver");
-		jpaProperties.put("url","jdbc:derby:/_/data/pcm/derbyDB");
-		jpaProperties.put("userName" ,"PCM");
-		jpaProperties.put("password" ,"PCM");
-		factoryBean.setJpaProperties(jpaProperties);
-
-        return factoryBean;
-    }
-
-    @Bean
-    public JpaVendorAdapter jpaVendorAdapter() {
+	@Primary
+    public JpaVendorAdapter pcmJpaVendorAdapter() {
         HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
-        hibernateJpaVendorAdapter.setShowSql(true);
+        hibernateJpaVendorAdapter.setShowSql(false);
         hibernateJpaVendorAdapter.setGenerateDdl(true);
         hibernateJpaVendorAdapter.setDatabase(Database.DERBY);
         return hibernateJpaVendorAdapter;
     }
-
+   
     @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
-
+    @Primary
+    public PlatformTransactionManager pcmTransactionManager() {
+ 
+        JpaTransactionManager transactionManager
+          = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(
+        		pcmEntityManager().getObject());
         return transactionManager;
     }
-
+    
     @Bean
+	@Primary
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
         return new PersistenceExceptionTranslationPostProcessor();
     }

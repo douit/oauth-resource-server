@@ -29,9 +29,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.core.io.Resource;
 
-import com.rkc.zds.resource.service.FileStorageService;
+import com.rkc.zds.resource.service.impl.FileStorageServiceImpl;
+
+import org.springframework.core.io.Resource;
 
 @CrossOrigin(origins = {"http://localhost:8089", "http://localhost:4200"})
 @RestController
@@ -41,7 +42,7 @@ public class FileUploadController {
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 	
     @Autowired
-    private FileStorageService fileStorageService;
+    private FileStorageServiceImpl fileStorageService;
     
     @RequestMapping(value="/singleUpload")
     public String singleUpload(){

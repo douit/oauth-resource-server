@@ -3,7 +3,10 @@ package com.rkc.zds.resource.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,6 +21,14 @@ import com.rkc.zds.resource.util.SearchCriteria;
 
 @Service
 public class SkillServiceImpl implements SkillService {
+	
+	@Autowired
+	@Qualifier("pcmEntityManager")
+	private EntityManager entityManager;
+	
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
 	
 	@Autowired
 	private SkillRepository skillRepo;

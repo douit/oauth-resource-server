@@ -40,7 +40,7 @@ import com.rkc.zds.resource.repository.ArticleRepository;
 import com.rkc.zds.resource.repository.ArticleTagArticleRepository;
 import com.rkc.zds.resource.repository.ArticleTagRepository;
 import com.rkc.zds.resource.repository.UserRepository;
-import com.rkc.zds.resource.service.ArticleQueryService;
+import com.rkc.zds.resource.service.impl.ArticleQueryServiceImpl;
 import com.rkc.zds.resource.service.ArticleReadService;
 
 @CrossOrigin(origins = "http://localhost:8089")
@@ -48,7 +48,7 @@ import com.rkc.zds.resource.service.ArticleReadService;
 @RequestMapping(path = "/api/articles")
 public class ArticlesController {
 	private ArticleRepository articleRepository;
-	private ArticleQueryService articleQueryService;
+	private ArticleQueryServiceImpl articleQueryService;
 	private ArticleReadService articleReadService;
 
 	@Autowired
@@ -61,7 +61,7 @@ public class ArticlesController {
 	ArticleTagArticleRepository tagArticleRepository;
 
 	@Autowired
-	public ArticlesController(ArticleRepository articleRepository, ArticleQueryService articleQueryService,
+	public ArticlesController(ArticleRepository articleRepository, ArticleQueryServiceImpl articleQueryService,
 			ArticleReadService articleReadService) {
 		this.articleRepository = articleRepository;
 		this.articleQueryService = articleQueryService;

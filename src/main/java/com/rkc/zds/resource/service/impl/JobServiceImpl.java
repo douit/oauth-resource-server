@@ -33,6 +33,14 @@ import com.rkc.zds.resource.util.SearchCriteria;
 @Service
 public class JobServiceImpl implements JobService {
 
+	@Autowired
+	@Qualifier("pcmEntityManager")
+	private EntityManager entityManager;
+	
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+	
 	/*
 	@Autowired
 	@Qualifier("solr")

@@ -30,7 +30,8 @@ import com.rkc.zds.resource.repository.ArticleTagArticleRepository;
 import com.rkc.zds.resource.repository.ArticleTagRepository;
 import com.rkc.zds.resource.repository.UserRepository;
 import com.rkc.zds.resource.service.AuthorizationService;
-import com.rkc.zds.resource.service.TagsQueryService;
+import com.rkc.zds.resource.service.impl.AuthorizationServiceImpl;
+import com.rkc.zds.resource.service.impl.TagsQueryServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:8089")
 @RestController
@@ -49,10 +50,10 @@ public class TagsController {
 	@Autowired	
 	ArticleRepository articleRepository;
 	
-    private TagsQueryService tagsQueryService;
+    private TagsQueryServiceImpl tagsQueryService;
 
     @Autowired
-    public TagsController(TagsQueryService tagsQueryService) {
+    public TagsController(TagsQueryServiceImpl tagsQueryService) {
         this.tagsQueryService = tagsQueryService;
     }
 
@@ -93,7 +94,7 @@ public class TagsController {
 		
 		//return articleRepository.findBySlug(slug).map(article -> {
 		return articleRepository.findById(id).map(article -> {
-			if (!AuthorizationService.canWriteArticle(temp, article)) {
+			if (!AuthorizationServiceImpl.canWriteArticle(temp, article)) {
 				throw new NoAuthorizationException();
 			}
 			tagArticleRepository.delete(tagArticle);
@@ -137,7 +138,7 @@ public class TagsController {
 		
 		//return articleRepository.findBySlug(slug).map(article -> {
 		return articleRepository.findById(id).map(article -> {
-			if (!AuthorizationService.canWriteArticle(temp, article)) {
+			if (!AuthorizationServiceImpl.canWriteArticle(temp, article)) {
 				throw new NoAuthorizationException();
 			}
 			tagArticleRepository.delete(tagArticle);

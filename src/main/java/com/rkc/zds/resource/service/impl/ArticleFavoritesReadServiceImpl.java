@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,14 @@ import com.rkc.zds.resource.service.ArticleFavoritesReadService;
 @Qualifier("articleFavoritesReadService")
 public class ArticleFavoritesReadServiceImpl implements ArticleFavoritesReadService {
 
+	@Autowired
+	@Qualifier("pcmEntityManager")
+	private EntityManager entityManager;
+	
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+	
 	@Autowired
 	ArticleFavoriteRepository favoritesRepo;
 	

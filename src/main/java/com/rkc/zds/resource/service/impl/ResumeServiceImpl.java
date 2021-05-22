@@ -38,6 +38,14 @@ import com.rkc.zds.resource.service.SkillService;
 @Service
 public class ResumeServiceImpl implements ResumeService {
 
+	@Autowired
+	@Qualifier("pcmEntityManager")
+	private EntityManager entityManager;
+	
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+	
 	/*
 	 * @Autowired
 	 * 

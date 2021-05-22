@@ -3,7 +3,10 @@ package com.rkc.zds.resource.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +25,14 @@ import com.rkc.zds.resource.service.GroupService;
 public class GroupServiceImpl implements GroupService {
 	private static final int PAGE_SIZE = 50;
 
+	@Autowired
+	@Qualifier("pcmEntityManager")
+	private EntityManager entityManager;
+	
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+	
 	@Autowired
 	private GroupRepository groupRepo;
 

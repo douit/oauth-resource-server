@@ -2,6 +2,8 @@ package com.rkc.zds.resource.service;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,6 +11,9 @@ import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.UserContactEntity;
 
 public interface UserContactsService {
+	
+	public EntityManager getEntityManager();
+	
     Page<UserContactEntity> findUserContacts(Pageable pageable, int userId);
 
     Page<ContactEntity> findFilteredContacts(Pageable pageable, int userId);    

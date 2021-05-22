@@ -41,8 +41,8 @@ import com.rkc.zds.resource.repository.ArticleRepository;
 import com.rkc.zds.resource.repository.ArticleTagArticleRepository;
 import com.rkc.zds.resource.repository.ArticleTagRepository;
 import com.rkc.zds.resource.repository.UserRepository;
-import com.rkc.zds.resource.service.ArticleQueryService;
-import com.rkc.zds.resource.service.AuthorizationService;
+import com.rkc.zds.resource.service.impl.ArticleQueryServiceImpl;
+import com.rkc.zds.resource.service.impl.AuthorizationServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:8089")
 @RestController
@@ -65,12 +65,12 @@ public class ArticleController {
 	ArticleFavoriteRepository favoritesRepository;
 	
 	@Autowired
-	private ArticleQueryService articleQueryService;
+	private ArticleQueryServiceImpl articleQueryService;
 
 	private ArticleRepository articleRepository;
 
 	@Autowired
-	public ArticleController(ArticleQueryService articleQueryService, ArticleRepository articleRepository) {
+	public ArticleController(ArticleQueryServiceImpl articleQueryService, ArticleRepository articleRepository) {
 		this.articleQueryService = articleQueryService;
 		this.articleRepository = articleRepository;
 	}
@@ -212,7 +212,7 @@ public class ArticleController {
 		final UserEntity temp = user;
 
 		return articleRepository.findById(id).map(article -> {
-			if (!AuthorizationService.canWriteArticle(temp, article)) {
+			if (!AuthorizationServiceImpl.canWriteArticle(temp, article)) {
 				throw new NoAuthorizationException();
 			}
 

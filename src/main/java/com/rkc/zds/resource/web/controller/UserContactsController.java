@@ -226,9 +226,20 @@ public class UserContactsController {
 
 	@RequestMapping(value = "/{userId}/{contactId}", method = RequestMethod.POST)
 	public void createUserContact(@PathVariable int userId, @PathVariable int contactId) {
+		
+		ContactEntity contact = contactService.getContact(contactId);
+		
 		UserContactEntity userContact = new UserContactEntity();
 		userContact.setUserId(userId);
 		userContact.setContactId(contactId);
+		userContact.setFirstName(contact.getFirstName());		
+		userContact.setLastName(contact.getLastName());	
+		userContact.setTitle(contact.getTitle());	
+		userContact.setCompany(contact.getTitle());		
+		userContact.setCompany(contact.getTitle());			
+		userContact.setPresenceImageUrl(contact.getPresenceImageUrl());	
+		userContact.setEnabled(contact.getEnabled());
+		
 		userContactsService.saveUserContact(userContact);
 		
 		UserEntity user = userService.getUser(userId);		

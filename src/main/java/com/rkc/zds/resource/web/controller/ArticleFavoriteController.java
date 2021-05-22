@@ -25,7 +25,7 @@ import com.rkc.zds.resource.model.ArticleData;
 import com.rkc.zds.resource.repository.ArticleFavoriteRepository;
 import com.rkc.zds.resource.repository.ArticleRepository;
 import com.rkc.zds.resource.repository.UserRepository;
-import com.rkc.zds.resource.service.ArticleQueryService;
+import com.rkc.zds.resource.service.impl.ArticleQueryServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:8089")
 @RestController
@@ -33,14 +33,14 @@ import com.rkc.zds.resource.service.ArticleQueryService;
 public class ArticleFavoriteController {
 	private ArticleFavoriteRepository articleFavoriteRepository;
 	private ArticleRepository articleRepository;
-	private ArticleQueryService articleQueryService;
+	private ArticleQueryServiceImpl articleQueryService;
 
 	@Autowired
 	UserRepository userRepository;
 
 	@Autowired
 	public ArticleFavoriteController(ArticleFavoriteRepository articleFavoriteRepository, ArticleRepository articleRepository,
-			ArticleQueryService articleQueryService) {
+			ArticleQueryServiceImpl articleQueryService) {
 		this.articleFavoriteRepository = articleFavoriteRepository;
 		this.articleRepository = articleRepository;
 		this.articleQueryService = articleQueryService;

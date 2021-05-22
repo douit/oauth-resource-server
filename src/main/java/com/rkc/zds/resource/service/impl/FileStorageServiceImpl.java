@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.service;
+package com.rkc.zds.resource.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.keycloak.KeycloakPrincipal;
@@ -30,12 +30,12 @@ import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
-public class FileStorageService {
+public class FileStorageServiceImpl {
 
     private final Path fileStorageLocation;
 
     @Autowired
-    public FileStorageService(FileStorageProperties fileStorageProperties) {
+    public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
 

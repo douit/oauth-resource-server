@@ -29,17 +29,17 @@ import com.rkc.zds.resource.exception.InvalidRequestException;
 import com.rkc.zds.resource.model.UserData;
 import com.rkc.zds.resource.model.UserWithToken;
 import com.rkc.zds.resource.repository.UserRepository;
-import com.rkc.zds.resource.service.UserQueryService;
+import com.rkc.zds.resource.service.impl.UserQueryServiceImpl;
 
 @CrossOrigin(origins = "http://localhost:8089")
 @RestController
 @RequestMapping(path = "/api/user")
 public class CurrentUserController {
-	private UserQueryService userQueryService;
+	private UserQueryServiceImpl userQueryService;
 	private UserRepository userRepository;
 
 	@Autowired
-	public CurrentUserController(UserQueryService userQueryService, UserRepository userRepository) {
+	public CurrentUserController(UserQueryServiceImpl userQueryService, UserRepository userRepository) {
 		this.userQueryService = userQueryService;
 		this.userRepository = userRepository;
 	}

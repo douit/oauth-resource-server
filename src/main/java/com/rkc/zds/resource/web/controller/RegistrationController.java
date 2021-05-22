@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rkc.zds.resource.dto.LoginDto;
 import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.UserEntity;
-import com.rkc.zds.resource.service.AuthenticationService;
+import com.rkc.zds.resource.service.impl.AuthenticationServiceImpl;
 import com.rkc.zds.resource.service.UserService;
 
 @CrossOrigin(origins = "http://www.zdslogic-development.com:4200")

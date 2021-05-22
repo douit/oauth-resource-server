@@ -28,8 +28,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
-import com.rkc.zds.resource.entity.GroupEntity;
 import com.rkc.zds.resource.service.GroupService;
+import com.rkc.zds.resource.entity.GroupEntity;
 
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;

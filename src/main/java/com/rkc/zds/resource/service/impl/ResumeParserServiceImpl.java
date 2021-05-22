@@ -7,18 +7,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tika.exception.TikaException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
 import com.rkc.zds.resource.entity.SkillEntity;
 import com.rkc.zds.resource.repository.SkillRepository;
-import com.rkc.zds.resource.service.FileStorageService;
+import com.rkc.zds.resource.service.impl.FileStorageServiceImpl;
 import com.rkc.zds.resource.service.ResumeParserService;
 import com.rkc.zds.resource.service.SkillService;
 import com.rkc.zds.resource.web.controller.ResponseWrapper;
@@ -28,12 +30,20 @@ import gate.util.GateException;
 
 @Service
 public class ResumeParserServiceImpl implements ResumeParserService {
-
+	
+	@Autowired
+	@Qualifier("pcmEntityManager")
+	private EntityManager entityManager;
+	
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+	
 	@Autowired
 	private ResumeParserProgram resumeParserProgram;
 	
     @Autowired
-    private FileStorageService fileStorageService;
+    private FileStorageServiceImpl fileStorageService;
     
 	@Autowired
 	private SkillService skillService;

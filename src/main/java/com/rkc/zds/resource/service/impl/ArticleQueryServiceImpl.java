@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.service;
+package com.rkc.zds.resource.service.impl;
 
 import static java.util.stream.Collectors.toList;
 
@@ -26,10 +26,13 @@ import com.rkc.zds.resource.model.ProfileData;
 import com.rkc.zds.resource.repository.ArticleTagArticleRepository;
 import com.rkc.zds.resource.repository.ArticleTagRepository;
 import com.rkc.zds.resource.repository.UserRepository;
+import com.rkc.zds.resource.service.ArticleFavoritesReadService;
+import com.rkc.zds.resource.service.ArticleReadService;
+import com.rkc.zds.resource.service.UserRelationshipQueryService;
 
 @Service
 @Qualifier("articleQueryService")
-public class ArticleQueryService {
+public class ArticleQueryServiceImpl {
 
 	private ArticleReadService articleReadService;
 	private UserRelationshipQueryService userRelationshipQueryService;
@@ -45,7 +48,7 @@ public class ArticleQueryService {
 	private UserRepository userRepo;
 	
 	@Autowired
-	public ArticleQueryService(ArticleReadService articleReadService,
+	public ArticleQueryServiceImpl(ArticleReadService articleReadService,
 			UserRelationshipQueryService userRelationshipQueryService,
 			ArticleFavoritesReadService articleFavoritesReadService) {
 		this.articleReadService = articleReadService;

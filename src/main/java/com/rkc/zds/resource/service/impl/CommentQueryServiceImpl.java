@@ -1,4 +1,4 @@
-package com.rkc.zds.resource.service;
+package com.rkc.zds.resource.service.impl;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,13 +8,15 @@ import org.springframework.stereotype.Service;
 import com.rkc.zds.resource.entity.ArticleCommentEntity;
 import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.CommentData;
+import com.rkc.zds.resource.service.CommentReadService;
+import com.rkc.zds.resource.service.UserRelationshipQueryService;
 
 @Service
-public class CommentQueryService {
+public class CommentQueryServiceImpl {
     private CommentReadService commentReadService;
     private UserRelationshipQueryService userRelationshipQueryService;
 
-    public CommentQueryService(CommentReadService commentReadService, UserRelationshipQueryService userRelationshipQueryService) {
+    public CommentQueryServiceImpl(CommentReadService commentReadService, UserRelationshipQueryService userRelationshipQueryService) {
         this.commentReadService = commentReadService;
         this.userRelationshipQueryService = userRelationshipQueryService;
     }

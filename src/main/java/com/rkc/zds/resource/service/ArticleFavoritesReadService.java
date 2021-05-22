@@ -9,9 +9,14 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
 @Mapper
 public interface ArticleFavoritesReadService {
-    boolean isUserFavorite(@Param("userId") Integer userId, @Param("articleId") Integer articleId);
+
+	public EntityManager getEntityManager();
+	
+	boolean isUserFavorite(@Param("userId") Integer userId, @Param("articleId") Integer articleId);
 
     int articleFavoriteCount(@Param("articleId") Integer articleId);
 

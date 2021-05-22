@@ -2,7 +2,10 @@ package com.rkc.zds.resource.service.impl;
 
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +17,15 @@ import com.rkc.zds.resource.service.PhoneService;
 
 @Service
 public class PhoneServiceImpl implements PhoneService {
-
+	
+	@Autowired
+	@Qualifier("pcmEntityManager")
+	private EntityManager entityManager;
+	
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+	
 	@Autowired
 	private PhoneRepository phoneRepo;
 
