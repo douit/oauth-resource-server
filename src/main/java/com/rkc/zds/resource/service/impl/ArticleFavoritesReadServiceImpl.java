@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,10 +24,10 @@ public class ArticleFavoritesReadServiceImpl implements ArticleFavoritesReadServ
 
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
+	private EntityManagerFactory entityManagerFactory;
 	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
 	
 	@Autowired

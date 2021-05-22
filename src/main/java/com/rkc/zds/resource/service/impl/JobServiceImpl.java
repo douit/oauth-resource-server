@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
@@ -35,18 +37,18 @@ public class JobServiceImpl implements JobService {
 
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
-	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	private EntityManagerFactory entityManagerFactory;
+
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
-	
+
 	/*
-	@Autowired
-	@Qualifier("solr")
-	private EmbeddedSolrExample solr;
-	*/
-	
+	 * @Autowired
+	 * 
+	 * @Qualifier("solr") private EmbeddedSolrExample solr;
+	 */
+
 	@Autowired
 	private JobRepository jobRepo;
 
@@ -54,7 +56,7 @@ public class JobServiceImpl implements JobService {
 	public List<JobEntity> findAll() {
 		return jobRepo.findAll();
 	}
-	
+
 	@Override
 	public Page<JobEntity> findJobs(Pageable pageable) {
 
@@ -62,128 +64,151 @@ public class JobServiceImpl implements JobService {
 
 		return page;
 	}
-/*
-	@Override
-	public void saveJob(JobEntity job) throws Exception {
+	/*
+	 * @Override public void saveJob(JobEntity job) throws Exception {
+	 * 
+	 * jobRepo.save(job);
+	 * 
+	 * File source = new File(job.getOriginalFileName());
+	 * 
+	 * String solrFilePath = "/_/data/jobs/storage/" + job.getUserId() + "_" +
+	 * job.getFirstName() + "_" + job.getLastName() + "_" + job.getShortFileName();
+	 * 
+	 * File dest = new File(solrFilePath);
+	 * 
+	 * try { FileUtils.copyFile(source, dest); } catch (IOException e) { // TODO
+	 * Auto-generated catch block e.printStackTrace(); }
+	 * 
+	 * EmbeddedSolrJob solr = EmbeddedSolrJob.getInstance();
+	 * 
+	 * EmbeddedSolrServer server = solr.getEmbeddedSolrServer();
+	 * 
+	 * solr.reindexSolr(); }
+	 */
 
-		jobRepo.save(job);
-		
-		File source = new File(job.getOriginalFileName());
-		
-		String solrFilePath = "/_/data/jobs/storage/"
-				+ job.getUserId() + "_" 				
-				+ job.getFirstName() + "_" 
-				+ job.getLastName() + "_" 
-				+ job.getShortFileName();
-		
-		File dest = new File(solrFilePath);
-		
-		try {
-			FileUtils.copyFile(source, dest);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	/*
+	 * @Override public Page<JobEntity> searchJobs(Pageable pageable, String search)
+	 * throws Exception {
+	 * 
+	 * EmbeddedSolrJob solr = EmbeddedSolrJob.getInstance();
+	 * 
+	 * //EmbeddedSolrServer server = solr.getEmbeddedSolrServer();
+	 * 
+	 * SolrDocumentList docList = solr.searchSolr(search);
+	 * 
+	 * List<JobEntity> jobList = new ArrayList<JobEntity>();
+	 * 
+	 * for(SolrDocument doc : docList) {
+	 * 
+	 * String userId = doc.getFieldValue("userId").toString(); userId =
+	 * userId.substring(1, userId.length() - 1);
+	 * 
+	 * String firstName = doc.getFieldValue("firstName").toString(); firstName =
+	 * firstName.substring(1, firstName.length() - 1);
+	 * 
+	 * String lastName = doc.getFieldValue("lastName").toString(); lastName =
+	 * lastName.substring(1, lastName.length() - 1);
+	 * 
+	 * String fileName = doc.getFieldValue("fileName").toString(); fileName =
+	 * fileName.substring(1, fileName.length() - 1);
+	 * 
+	 * //JobEntity job = new JobEntity();
+	 * 
+	 * //job.setUserId(firstName); //job.setFirstName(firstName);
+	 * //job.setLastName(lastName); //job.setShortFileName(fileName);
+	 * 
+	 * // List<JobEntity> tempList = findByFirstNameAndLastName(firstName,lastName);
+	 * 
+	 * int id =Integer.parseInt(userId); List<JobEntity> tempList =
+	 * findByUserId(id);
+	 * 
+	 * for(JobEntity tempJob:tempList) { jobList.add(tempJob); }
+	 * 
+	 * }
+	 * 
+	 * //List<JobEntity> job
+	 * 
+	 * 
+	 * int size = jobList.size(); if(size == 0) { size = 1; } PageRequest
+	 * pageRequest = PageRequest.of(0, size);
+	 * 
+	 * PageImpl<JobEntity> page = new PageImpl<JobEntity>(jobList, pageRequest,
+	 * size);
+	 * 
+	 * return page; }
+	 */
 
-		EmbeddedSolrJob solr = EmbeddedSolrJob.getInstance();
-		
-		EmbeddedSolrServer server = solr.getEmbeddedSolrServer();
-		
-		solr.reindexSolr();
-	}
-*/
-	
-/*
-	@Override
-	public Page<JobEntity> searchJobs(Pageable pageable, String search) throws Exception {
-		
-		EmbeddedSolrJob solr = EmbeddedSolrJob.getInstance();
-		
-		//EmbeddedSolrServer server = solr.getEmbeddedSolrServer();
-		
-		SolrDocumentList docList = solr.searchSolr(search);
-		
-		List<JobEntity> jobList = new ArrayList<JobEntity>();
-	
-		for(SolrDocument doc : docList) {
-
-			String userId = doc.getFieldValue("userId").toString();
-			userId = userId.substring(1, userId.length() - 1);
-			
-			String firstName = doc.getFieldValue("firstName").toString();
-			firstName = firstName.substring(1, firstName.length() - 1);
-			
-			String lastName = doc.getFieldValue("lastName").toString();
-			lastName = lastName.substring(1, lastName.length() - 1);
-			
-			String fileName = doc.getFieldValue("fileName").toString();
-			fileName = fileName.substring(1, fileName.length() - 1);
-			
-			//JobEntity job = new JobEntity();
-
-			//job.setUserId(firstName);
-			//job.setFirstName(firstName);
-			//job.setLastName(lastName);
-			//job.setShortFileName(fileName);
-			
-			// List<JobEntity> tempList = findByFirstNameAndLastName(firstName,lastName);
-			
-			int id =Integer.parseInt(userId); 
-			List<JobEntity> tempList = findByUserId(id);
-						
-			for(JobEntity tempJob:tempList) {
-				jobList.add(tempJob);
-			}
-						
-		}
-		
-		//List<JobEntity> job
-		
-		
-		int size = jobList.size();
-		if(size == 0) {
-			size = 1;
-		}		
-		PageRequest pageRequest = PageRequest.of(0, size);
-
-		PageImpl<JobEntity> page = new PageImpl<JobEntity>(jobList, pageRequest, size);
-
-		return page;
-	}
-*/
-	
 	@Override
 	public JobEntity getJob(int id) {
-	
+
 		Optional<JobEntity> job = jobRepo.findById(id);
-		if(job.isPresent())
+		if (job.isPresent())
 			return job.get();
 		else
 			return null;
 	}
 
 	@Override
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	public JobEntity saveJob(JobEntity job) {
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
-		return jobRepo.save(job);
-		
+		EntityTransaction tx = null;
+
+		JobEntity result = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+			
+			result = jobRepo.save(job);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return result;
 	}
-	
+
 	@Override
 	public void updateJob(JobEntity job) {
 
-		jobRepo.saveAndFlush(job);
-		
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+			jobRepo.saveAndFlush(job);
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
-	
+
 	@Override
 	public void deleteJob(int id) {
 
-		jobRepo.deleteById(id);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			jobRepo.deleteById(id);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
-	
+
 	@Override
 	public Page<JobEntity> searchJobs(Pageable pageable, Specification<JobEntity> spec) {
 		return jobRepo.findAll(spec, pageable);
@@ -204,13 +229,13 @@ public class JobServiceImpl implements JobService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public Page<JobEntity> searchJobsByJobCompany(String jobCompany) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public List<JobEntity> searchJobsByJobTitleAndJobCompany(String lastName, String firsttName) {
 		// TODO Auto-generated method stub
@@ -222,5 +247,5 @@ public class JobServiceImpl implements JobService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }

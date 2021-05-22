@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,20 +25,20 @@ public class AddressServiceImpl implements AddressService {
 
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
-	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	private EntityManagerFactory entityManagerFactory;
+
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
-	
+
 	@Autowired
 	private AddressRepository addressRepo;
-	
+
 	@Override
 	public List<AddressEntity> findAllByContactId(int contactId) {
 		return addressRepo.findByContactId(contactId);
 	}
-	
+
 	@Override
 	public Page<AddressEntity> findAddress(Pageable pageable, int contactId) {
 
@@ -47,23 +49,64 @@ public class AddressServiceImpl implements AddressService {
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void saveAddress(AddressEntity email) {
+	public void saveAddress(AddressEntity address) {
 
-		addressRepo.save(email);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+		
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			addressRepo.save(address);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void updateAddress(AddressEntity email) {
+	public void updateAddress(AddressEntity address) {
 
-		addressRepo.saveAndFlush(email);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+		
+		EntityTransaction tx = null;
 
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			addressRepo.saveAndFlush(address);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	public void deleteAddress(int id) {
 
-		addressRepo.deleteById(id);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+		
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			addressRepo.deleteById(id);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 
 	}
 

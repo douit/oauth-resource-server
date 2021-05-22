@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tika.exception.TikaException;
@@ -33,10 +33,10 @@ public class ResumeParserServiceImpl implements ResumeParserService {
 	
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
+	private EntityManagerFactory entityManagerFactory;
 	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
 	
 	@Autowired

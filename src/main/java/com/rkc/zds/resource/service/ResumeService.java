@@ -2,7 +2,7 @@ package com.rkc.zds.resource.service;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +13,7 @@ import com.rkc.zds.resource.entity.UserEntity;
 
 public interface ResumeService {
 	
-	public EntityManager getEntityManager();
+	public EntityManagerFactory getEntityManagerFactory();
 	
     Page<ResumeEntity> findResumes(Pageable pageable);
     

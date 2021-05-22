@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,18 +29,18 @@ public class GroupServiceImpl implements GroupService {
 
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
-	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	private EntityManagerFactory entityManagerFactory;
+
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
-	
+
 	@Autowired
 	private GroupRepository groupRepo;
 
 	@Autowired
 	private GroupMemberRepository groupMemberRepo;
-	
+
 	@Override
 	public Page<GroupEntity> findGroups(Pageable pageable) {
 
@@ -47,9 +49,9 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public GroupEntity getGroup(int id) {
-		
+
 		Optional<GroupEntity> group = groupRepo.findById(id);
-		
+
 		return group.get();
 
 	}
@@ -59,11 +61,11 @@ public class GroupServiceImpl implements GroupService {
 
 		final PageRequest pageRequest = PageRequest.of(0, 10, sortByNameASC());
 
-		Page<GroupMemberEntity> page = groupMemberRepo.findByGroupId(pageRequest, id );
+		Page<GroupMemberEntity> page = groupMemberRepo.findByGroupId(pageRequest, id);
 
 		return page;
 	}
-	
+
 	@Override
 	public Page<GroupEntity> searchGroups(String name) {
 
@@ -75,34 +77,78 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void saveGroup(GroupEntity group) {
-		groupRepo.save(group);
+
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			groupRepo.save(group);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updateGroup(GroupEntity group) {
-		groupRepo.saveAndFlush(group);
+
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+			
+			groupRepo.saveAndFlush(group);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
-	
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteGroup(int groupId) {
-		
-		//delete all group members for this group prior to deleting group.		
-		List<GroupMemberEntity> list = groupMemberRepo.findByGroupId(groupId);
-		
-		for(GroupMemberEntity element : list){
-			groupMemberRepo.delete(element);
+
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			// delete all group members for this group prior to deleting group.
+			List<GroupMemberEntity> list = groupMemberRepo.findByGroupId(groupId);
+
+			for (GroupMemberEntity element : list) {
+				groupMemberRepo.delete(element);
+			}
+
+			groupRepo.deleteById(groupId);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
 		}
-		
-		groupRepo.deleteById(groupId);
+
 	}
 
 	private Sort sortByNameASC() {
 		return Sort.by(Sort.Direction.ASC, "groupName");
 	}
-	
+
 	@Override
 	public Page<GroupEntity> searchGroups(Pageable pageable, Specification<GroupEntity> spec) {
 		return groupRepo.findAll(spec, pageable);

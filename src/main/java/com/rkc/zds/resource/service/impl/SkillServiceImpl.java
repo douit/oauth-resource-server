@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,18 +23,18 @@ import com.rkc.zds.resource.util.SearchCriteria;
 
 @Service
 public class SkillServiceImpl implements SkillService {
-	
+
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
-	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	private EntityManagerFactory entityManagerFactory;
+
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
-	
+
 	@Autowired
 	private SkillRepository skillRepo;
-	
+
 	@Override
 	public List<SkillEntity> findAll() {
 		return skillRepo.findAll();
@@ -50,13 +52,14 @@ public class SkillServiceImpl implements SkillService {
 		return skillRepo.findAll(spec, pageable);
 
 	}
-/*
-	@Override
-	public Page<SkillEntity> searchSkillsBySkillName(Pageable pageable,String skillName) {
-		return skillRepo.findBySkillName(pageable,skillName);
 
-	}
-*/
+	/*
+	 * @Override public Page<SkillEntity> searchSkillsBySkillName(Pageable
+	 * pageable,String skillName) { return
+	 * skillRepo.findBySkillName(pageable,skillName);
+	 * 
+	 * }
+	 */
 	@Override
 	public Page<SkillEntity> searchSkills(Pageable pageable, List<SearchCriteria> params) {
 		// TODO Auto-generated method stub
@@ -66,7 +69,7 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public SkillEntity getSkill(int id) {
 		Optional<SkillEntity> skill = skillRepo.findById(id);
-		if(skill.isPresent())
+		if (skill.isPresent())
 			return skill.get();
 		else
 			return null;
@@ -74,19 +77,65 @@ public class SkillServiceImpl implements SkillService {
 
 	@Override
 	public SkillEntity saveSkill(SkillEntity skill) {
-		return skillRepo.save(skill);
+
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		SkillEntity result = null;
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			result = skillRepo.save(skill);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		return result;
 	}
 
 	@Override
 	public void updateSkill(SkillEntity skill) {
-		skillRepo.saveAndFlush(skill);
-		
+
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			skillRepo.saveAndFlush(skill);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	public void deleteSkill(int id) {
-		skillRepo.deleteById(id);
-		
+
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			skillRepo.deleteById(id);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override

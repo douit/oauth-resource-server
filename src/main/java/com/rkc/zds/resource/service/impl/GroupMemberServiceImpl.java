@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,15 +27,15 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
-	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	private EntityManagerFactory entityManagerFactory;
+
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
 
 	@Autowired
 	private ContactRepository contactRepo;
-	
+
 	@Autowired
 	private GroupMemberRepository groupMemberRepo;
 
@@ -44,14 +46,14 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
 		return page;
 	}
-	
+
 	@Override
 	public Page<ContactEntity> findFilteredContacts(Pageable pageable, int groupId) {
 
 		List<ContactEntity> contacts = contactRepo.findAll();
 
 		List<GroupMemberEntity> groupMemberList = groupMemberRepo.findByGroupId(groupId);
-		
+
 		List<ContactEntity> testList = new ArrayList<ContactEntity>();
 
 		List<ContactEntity> filteredList = new ArrayList<ContactEntity>();
@@ -59,7 +61,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 		// build member list of Contacts
 		Optional<ContactEntity> contact;
 		for (GroupMemberEntity element : groupMemberList) {
-			contact= contactRepo.findById(element.getContactId());
+			contact = contactRepo.findById(element.getContactId());
 			testList.add(contact.get());
 		}
 
@@ -72,17 +74,17 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 		}
 
 		int size = filteredList.size();
-		if(size == 0) {
+		if (size == 0) {
 			size = 1;
 		}
-		
+
 		PageRequest pageRequest = PageRequest.of(0, size);
 
 		PageImpl<ContactEntity> page = new PageImpl<ContactEntity>(filteredList, pageRequest, size);
 
 		return page;
 	}
-	
+
 	@Override
 	public List<GroupMemberEntity> findAllMembers(int groupId) {
 
@@ -103,13 +105,41 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 			}
 		}
 
-		groupMemberRepo.save(groupMember);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			groupMemberRepo.save(groupMember);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	public void deleteGroupMember(int id) {
 
-		groupMemberRepo.deleteById(id);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			groupMemberRepo.deleteById(id);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 
 	}
 }

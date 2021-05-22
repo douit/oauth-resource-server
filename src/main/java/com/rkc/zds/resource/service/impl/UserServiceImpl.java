@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
@@ -40,27 +42,27 @@ import com.rkc.zds.resource.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-	
+
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
-	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	private EntityManagerFactory entityManagerFactory;
+
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
-	
+
 	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
 	private ContactRepository contactRepository;
-	
+
 	@Autowired
 	private AuthorityRepository authorityRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private ContactService contactService;
 
@@ -105,15 +107,41 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateUser(UserEntity user) {
 
-		userRepository.saveAndFlush(user);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+			
+			userRepository.saveAndFlush(user);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	public void saveUser(UserEntity user) {
 
-		userRepository.save(user);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			userRepository.save(user);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
@@ -136,7 +164,22 @@ public class UserServiceImpl implements UserService {
 		 * 
 		 * userRepository.deleteById(id); }
 		 */
-		userRepository.deleteById(id);
+
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			userRepository.deleteById(id);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
@@ -149,7 +192,7 @@ public class UserServiceImpl implements UserService {
 
 		accountDto.setPassword(passwordEncoder.encode(accountDto.getPassword()));
 		accountDto.setEnabled(1);
-		accountDto.setIsLoggedIn(0);		
+		accountDto.setIsLoggedIn(0);
 		UserEntity user = userRepository.save(accountDto);
 
 		AuthorityEntity role = new AuthorityEntity();
@@ -157,11 +200,11 @@ public class UserServiceImpl implements UserService {
 		role.setAuthority("ROLE_USER");
 
 		authorityRepository.save(role);
-		
+
 		linkUsertoContact(user);
 
 		Keycloak kc = Keycloak.getInstance("https://www.zdslogic.com/keycloak/auth", "zdslogic", "richard.campion",
-				"ArcyAdmin8246+", "admin-cli");		
+				"ArcyAdmin8246+", "admin-cli");
 
 		CredentialRepresentation credential = new CredentialRepresentation();
 		credential.setType(CredentialRepresentation.PASSWORD);
@@ -203,35 +246,36 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private void linkUsertoContact(UserEntity user) {
-		List<ContactEntity> contacts = contactService.searchContactsByLastNameAndFirstName(user.getLastName(), user.getFirstName());
-		
-		if(contacts.size()==1) {
+		List<ContactEntity> contacts = contactService.searchContactsByLastNameAndFirstName(user.getLastName(),
+				user.getFirstName());
+
+		if (contacts.size() == 1) {
 			ContactEntity contact = contacts.get(0);
-			
+
 			user.setContactId(contact.getId());
-			
+
 			userRepository.save(user);
-			
+
 			contact.setUserId(user.getId());
-			
+
 			contactRepository.save(contact);
-			
-		} else if(contacts.size()==0) {
-			
+
+		} else if (contacts.size() == 0) {
+
 			ContactEntity contact = new ContactEntity();
-			
+
 			contact.setFirstName(user.getFirstName());
 			contact.setLastName(user.getLastName());
 			contact.setCompany("Unknown");
 			contact.setTitle("Unknown");
 			contact.setUserId(user.getId());
-			
+
 			contact = contactRepository.save(contact);
-			
+
 			user.setContactId(contact.getId());
-			
+
 			userRepository.save(user);
-			
+
 		}
 	}
 
@@ -288,21 +332,61 @@ public class UserServiceImpl implements UserService {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updateAuthority(AuthorityEntity authority) {
 
-		authorityRepository.saveAndFlush(authority);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			authorityRepository.saveAndFlush(authority);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	public void saveAuthority(AuthorityEntity role) {
 
-		authorityRepository.save(role);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			authorityRepository.save(role);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	public void deleteAuthority(int id) {
 
-		authorityRepository.deleteById(id);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			authorityRepository.deleteById(id);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 
 	}
 }

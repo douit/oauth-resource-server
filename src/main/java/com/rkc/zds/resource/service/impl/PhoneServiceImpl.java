@@ -3,6 +3,8 @@ package com.rkc.zds.resource.service.impl;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,15 +19,15 @@ import com.rkc.zds.resource.service.PhoneService;
 
 @Service
 public class PhoneServiceImpl implements PhoneService {
-	
+
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
-	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	private EntityManagerFactory entityManagerFactory;
+
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
-	
+
 	@Autowired
 	private PhoneRepository phoneRepo;
 
@@ -41,29 +43,70 @@ public class PhoneServiceImpl implements PhoneService {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void savePhone(PhoneEntity phone) {
 
-		phoneRepo.save(phone);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			phoneRepo.save(phone);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
-	
+
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updatePhone(PhoneEntity phone) {
 
-		phoneRepo.saveAndFlush(phone);
-		
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			phoneRepo.saveAndFlush(phone);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
 	}
-	
+
 	@Override
 	public void deletePhone(int id) {
 
-		phoneRepo.deleteById(id);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			phoneRepo.deleteById(id);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	public PhoneEntity getPhone(int id) {
-	
+
 		Optional<PhoneEntity> phone = phoneRepo.findById(id);
-		if(phone.isPresent())
+		if (phone.isPresent())
 			return phone.get();
 		else
 			return null;

@@ -9,12 +9,12 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 @Mapper
 public interface ArticleFavoritesReadService {
 
-	public EntityManager getEntityManager();
+	public EntityManagerFactory getEntityManagerFactory();
 	
 	boolean isUserFavorite(@Param("userId") Integer userId, @Param("articleId") Integer articleId);
 

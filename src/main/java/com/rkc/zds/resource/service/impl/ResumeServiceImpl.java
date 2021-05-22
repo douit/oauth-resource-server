@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
@@ -40,12 +42,12 @@ public class ResumeServiceImpl implements ResumeService {
 
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
-	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	private EntityManagerFactory entityManagerFactory;
+
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
-	
+
 	/*
 	 * @Autowired
 	 * 
@@ -71,7 +73,23 @@ public class ResumeServiceImpl implements ResumeService {
 	@Override
 	public ResumeEntity saveResume(ResumeEntity resume) throws Exception {
 
-		ResumeEntity resumeSaved = resumeRepo.save(resume);
+		ResumeEntity resumeSaved = null;
+
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			resumeSaved = resumeRepo.save(resume);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 
 		File source = new File(resume.getOriginalFileName());
 
@@ -107,10 +125,18 @@ public class ResumeServiceImpl implements ResumeService {
 				resumeSkill.setResumeId(resumeSaved.getResumeId());
 				resumeSkill.setSkillId(skill.getSkillId());
 				resumeSkill.setSkillName(skill.getSkillName());
-				resumeSkillRepo.save(resumeSkill);
 
+				try {
+					tx = em.getTransaction();
+					tx.begin();
+					
+					resumeSkillRepo.save(resumeSkill);
+
+					tx.commit();
+				} catch (Exception e) {
+					System.out.println(e);
+				}
 			}
-
 		}
 
 		return resumeSaved;
@@ -175,8 +201,21 @@ public class ResumeServiceImpl implements ResumeService {
 	@Override
 	public void updateResume(ResumeEntity resume) {
 
-		resumeRepo.saveAndFlush(resume);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			resumeRepo.saveAndFlush(resume);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
@@ -186,18 +225,31 @@ public class ResumeServiceImpl implements ResumeService {
 
 		ResumeEntity resumeDto = null;
 
-		if (resume.isPresent()) {
-			resumeDto = resume.get();
-			
-			List<ResumeSkillEntity> skillsList = resumeSkillRepo.findByResumeId(resumeDto.getResumeId());
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
-			for (ResumeSkillEntity skill : skillsList) {
-				resumeSkillRepo.delete(skill);
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			if (resume.isPresent()) {
+				resumeDto = resume.get();
+
+				List<ResumeSkillEntity> skillsList = resumeSkillRepo.findByResumeId(resumeDto.getResumeId());
+
+				for (ResumeSkillEntity skill : skillsList) {
+					resumeSkillRepo.delete(skill);
+				}
 			}
+
+			resumeRepo.deleteById(id);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
 		}
-
-		resumeRepo.deleteById(id);
-
 	}
 
 	@Override

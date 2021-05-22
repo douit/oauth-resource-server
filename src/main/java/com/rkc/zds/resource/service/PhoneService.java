@@ -1,6 +1,6 @@
 package com.rkc.zds.resource.service;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +9,7 @@ import com.rkc.zds.resource.entity.PhoneEntity;
 
 public interface PhoneService {
 	
-	public EntityManager getEntityManager();
+	public EntityManagerFactory getEntityManagerFactory();
 	
     Page<PhoneEntity> findPhones(Pageable pageable, int contactId);
     

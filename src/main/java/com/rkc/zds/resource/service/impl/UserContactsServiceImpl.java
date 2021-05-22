@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,15 +24,15 @@ import com.rkc.zds.resource.service.UserContactsService;
 
 @Service
 public class UserContactsServiceImpl implements UserContactsService {
-	
+
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
-	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	private EntityManagerFactory entityManagerFactory;
+
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
-	
+
 	@Autowired
 	private ContactRepository contactRepo;
 
@@ -45,11 +47,11 @@ public class UserContactsServiceImpl implements UserContactsService {
 		return page;
 	}
 
-    public List<UserContactEntity> getAllUserContacts(){
-    	List<UserContactEntity> list = userContactsRepo.findAll();
-    	return list;
-    }
-    
+	public List<UserContactEntity> getAllUserContacts() {
+		List<UserContactEntity> list = userContactsRepo.findAll();
+		return list;
+	}
+
 	@Override
 	public List<UserContactEntity> findAllUserContacts(int userId) {
 
@@ -57,7 +59,7 @@ public class UserContactsServiceImpl implements UserContactsService {
 
 		return list;
 	}
-	
+
 	@Override
 	public UserContactEntity findUserContact(int id) {
 
@@ -116,19 +118,60 @@ public class UserContactsServiceImpl implements UserContactsService {
 			}
 		}
 
-		userContactsRepo.save(userContact);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			userContactsRepo.save(userContact);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	public void saveUserContact(UserContactEntity userContact) {
 
-		userContactsRepo.save(userContact);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			userContactsRepo.save(userContact);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	public void deleteUserContact(int id) {
 
-		userContactsRepo.deleteById(id);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			userContactsRepo.deleteById(id);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 }

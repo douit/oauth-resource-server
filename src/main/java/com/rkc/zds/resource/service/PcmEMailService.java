@@ -2,7 +2,7 @@ package com.rkc.zds.resource.service;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +12,7 @@ import com.rkc.zds.resource.model.EMailSend;
 
 public interface PcmEMailService {
 	
-	public EntityManager getEntityManager();
+	public EntityManagerFactory getEntityManagerFactory();
 	
 	List<EMailEntity> findAllByContactId(int contactId);
 	

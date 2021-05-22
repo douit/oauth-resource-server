@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,20 +26,20 @@ public class PcmEMailServiceImpl implements PcmEMailService {
 
 	@Autowired
 	@Qualifier("pcmEntityManager")
-	private EntityManager entityManager;
-	
-	public EntityManager getEntityManager() {
-		return entityManager;
+	private EntityManagerFactory entityManagerFactory;
+
+	public EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
-	
+
 	@Autowired
 	private EMailRepository eMailRepo;
-	
+
 	@Override
 	public List<EMailEntity> findAllByContactId(int contactId) {
 		return eMailRepo.findByContactId(contactId);
 	}
-	
+
 	@Override
 	public Page<EMailEntity> findEMails(Pageable pageable, int contactId) {
 
@@ -49,23 +51,61 @@ public class PcmEMailServiceImpl implements PcmEMailService {
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void saveEMail(EMailEntity email) {
+		
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
-		eMailRepo.save(email);
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+			eMailRepo.save(email);
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updateEMail(EMailEntity email) {
 
-		eMailRepo.saveAndFlush(email);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			eMailRepo.saveAndFlush(email);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
 	public void deleteEMail(int id) {
 
-		eMailRepo.deleteById(id);
+		EntityManagerFactory emf = getEntityManagerFactory();
+		EntityManager em = emf.createEntityManager();
 
+		EntityTransaction tx = null;
+
+		try {
+			tx = em.getTransaction();
+			tx.begin();
+
+			eMailRepo.deleteById(id);
+
+			tx.commit();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
@@ -91,7 +131,5 @@ public class PcmEMailServiceImpl implements PcmEMailService {
 
 		}
 	}
-
-
 
 }

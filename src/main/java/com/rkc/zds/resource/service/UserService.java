@@ -2,7 +2,7 @@ package com.rkc.zds.resource.service;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +17,7 @@ import com.rkc.zds.resource.exception.UserAlreadyExistException;
 
 public interface UserService {
 	
-	public EntityManager getEntityManager();
+	public EntityManagerFactory getEntityManagerFactory();
 	
     Page<UserEntity> findUsers(Pageable pageable);
     
