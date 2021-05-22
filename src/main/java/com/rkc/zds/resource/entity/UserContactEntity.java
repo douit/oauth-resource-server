@@ -41,6 +41,24 @@ public class UserContactEntity implements Serializable {
 	@Column(name = "COMPANY", length = 100)
 	private String company;
 
+	@Column(name = "IMAGE_URL", length = 100)
+	private String imageURL;
+
+	@Column(name = "LINKEDIN", length = 100)
+	private String linkedin;
+
+	@Column(name = "FACEBOOK", length = 100)
+	private String facebook;
+	
+	@Column(name = "SKYPE", length = 100)
+	private String skype;
+
+	@Column(name = "TWITTER", length = 100)
+	private String twitter;
+
+	@Column(name = "NOTES", length = 100)
+	private String notes;
+	
 	@Column(name = "PRESENCE_IMAGE_URL", length = 100)
 	private String presenceImageUrl;
 	
@@ -101,6 +119,54 @@ public class UserContactEntity implements Serializable {
 
 	public void setCompany(String company) {
 		this.company = company;
+	}
+
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
+	}
+
+	public String getLinkedin() {
+		return linkedin;
+	}
+
+	public void setLinkedin(String linkedin) {
+		this.linkedin = linkedin;
+	}
+
+	public String getFacebook() {
+		return facebook;
+	}
+
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
+	}
+	
+	public String getSkype() {
+		return skype;
+	}
+
+	public void setSkype(String skype) {
+		this.skype = skype;
+	}
+
+	public String getTwitter() {
+		return twitter;
+	}
+
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 	public String getPresenceImageUrl() {

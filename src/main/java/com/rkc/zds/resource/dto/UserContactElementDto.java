@@ -9,6 +9,12 @@ public class UserContactElementDto {
 	private String lastName;
 	private String title;
 	private String company;
+	private String imageURL;
+	private String linkedin;
+	private String facebook;
+	private String skype;
+	private String twitter;
+	private String notes;	
 	private String presenceImageUrl;
 	private Integer enabled;
 	
@@ -53,7 +59,43 @@ public class UserContactElementDto {
 	}
 	public void setCompany(String company) {
 		this.company = company;
-	}	
+	}
+	public String getImageURL() {
+		return imageURL;
+	}
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
+	}
+	public String getLinkedin() {
+		return linkedin;
+	}
+	public void setLinkedin(String linkedin) {
+		this.linkedin = linkedin;
+	}
+	public String getFacebook() {
+		return facebook;
+	}
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
+	}
+	public String getSkype() {
+		return skype;
+	}
+	public void setSkype(String skype) {
+		this.skype = skype;
+	}
+	public String getTwitter() {
+		return twitter;
+	}
+	public void setTwitter(String twitter) {
+		this.twitter = twitter;
+	}
+	public String getNotes() {
+		return notes;
+	}
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
 	public String getPresenceImageUrl() {
 		return presenceImageUrl;
 	}

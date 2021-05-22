@@ -9,11 +9,9 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.io.FileUtils;
-
-//import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-//import org.apache.solr.common.SolrDocument;
-//import org.apache.solr.common.SolrDocumentList;
-
+import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
