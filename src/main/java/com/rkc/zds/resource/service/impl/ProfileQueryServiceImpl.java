@@ -3,7 +3,8 @@ package com.rkc.zds.resource.service.impl;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+//import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.model.ProfileData;
@@ -11,7 +12,8 @@ import com.rkc.zds.resource.model.UserData;
 import com.rkc.zds.resource.service.UserReadService;
 import com.rkc.zds.resource.service.UserRelationshipQueryService;
 
-@Component
+//Component
+@Service
 public class ProfileQueryServiceImpl {
     private UserReadService userReadService;
     private UserRelationshipQueryService userRelationshipQueryService;

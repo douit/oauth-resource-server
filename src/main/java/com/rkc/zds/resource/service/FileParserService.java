@@ -7,10 +7,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.rkc.zds.resource.web.controller.ResponseWrapper;
 
-public interface ResumeParserService {
+public interface FileParserService {
 	
 	public EntityManagerFactory getEntityManagerFactory();
 
-	ResponseWrapper parseResume(HttpServletRequest request, MultipartFile file);
+	ResponseWrapper parseFile(HttpServletRequest request, MultipartFile file);
 
 }

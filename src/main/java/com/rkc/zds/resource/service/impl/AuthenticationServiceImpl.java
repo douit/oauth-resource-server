@@ -308,7 +308,7 @@ public class AuthenticationServiceImpl {
 		if (userDTO != null) {
 			System.out.println(userDTO.getFirstName() + " " + userDTO.getLastName());
 			System.out.println("Sending Logout Message");
-			webSocket.convertAndSend("/topic/user/auth", message);
+			//webSocket.convertAndSend("/topic/user/auth", message);
 		}
 	}
 

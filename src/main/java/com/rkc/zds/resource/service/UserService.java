@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.rkc.zds.resource.dto.LoginDto;
+import com.rkc.zds.resource.dto.LoginDTO;
 import com.rkc.zds.resource.entity.AuthorityEntity;
 import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.exception.UserAlreadyExistException;
@@ -39,7 +39,7 @@ public interface UserService {
 
 	Page<UserEntity> searchUsers(Pageable pageable, Specification<UserEntity> spec);
 
-	UserEntity changePassword(LoginDto loginDTO, HttpServletRequest request, HttpServletResponse response);
+	UserEntity changePassword(LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response);
 
 	Page<AuthorityEntity> findAuthorities(Pageable pageable, String userName);
 

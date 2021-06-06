@@ -29,7 +29,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.rkc.zds.resource.dto.LoginDto;
+import com.rkc.zds.resource.dto.LoginDTO;
 import com.rkc.zds.resource.entity.AuthorityEntity;
 import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.UserEntity;
@@ -295,7 +295,7 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findAll(spec, pageable);
 	}
 
-	public UserEntity changePassword(LoginDto loginDTO, HttpServletRequest request, HttpServletResponse response) {
+	public UserEntity changePassword(LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
 		Optional<UserEntity> user = userRepository.findByUserName(loginDTO.getLogin());
 
 		UserEntity userDto = null;

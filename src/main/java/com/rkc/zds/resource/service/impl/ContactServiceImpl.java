@@ -158,6 +158,7 @@ public class ContactServiceImpl implements ContactService {
 	@Override
 	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ContactEntity saveContact(ContactEntity contact) {
+		
 		EntityManagerFactory emf = getEntityManagerFactory();
 		EntityManager em = emf.createEntityManager();
 

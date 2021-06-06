@@ -78,14 +78,14 @@ public class UsersController {
 		userService.deleteUser(id);
 		return Integer.toString(id);
 	}
-
+/*
 	@RequestMapping(value = "/users/password", method = RequestMethod.POST)
 	public UserEntity changePassword(@RequestBody LoginDto loginDTO, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
 		return userService.changePassword(loginDTO, request, response);
 	}
-
+*/
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/users", method = RequestMethod.POST, consumes = {
 			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
