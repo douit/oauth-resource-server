@@ -204,7 +204,7 @@ public class UserServiceImpl implements UserService {
 		linkUsertoContact(user);
 
 		Keycloak kc = Keycloak.getInstance("https://www.zdslogic.com/keycloak/auth", "zdslogic", "richard.campion",
-				"ChangeIt", "admin-cli");
+				"ChangeIt+", "admin-cli");
 
 		CredentialRepresentation credential = new CredentialRepresentation();
 		credential.setType(CredentialRepresentation.PASSWORD);
