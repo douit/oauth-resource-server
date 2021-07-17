@@ -91,10 +91,6 @@ public class MainClass{
 					converter = new DocToPDFConverter(inStream, outStream, shouldShowMessages, true);
 				} else if (lowerCaseInPath.endsWith("docx")){
 					converter = new DocxToPDFConverter(inStream, outStream, shouldShowMessages, true);
-				} else if(lowerCaseInPath.endsWith("ppt")){
-					converter = new PptToPDFConverter(inStream, outStream, shouldShowMessages, true);
-				} else if(lowerCaseInPath.endsWith("pptx")){
-					converter = new PptxToPDFConverter(inStream, outStream, shouldShowMessages, true);
 				} else if(lowerCaseInPath.endsWith("odt")){
 					converter = new OdtToPDF(inStream, outStream, shouldShowMessages, true);
 				} else {
@@ -108,10 +104,6 @@ public class MainClass{
 				case DOC: converter = new DocToPDFConverter(inStream, outStream, shouldShowMessages, true);
 				break; 
 				case DOCX: converter = new DocxToPDFConverter(inStream, outStream, shouldShowMessages, true);
-				break;
-				case PPT:  converter = new PptToPDFConverter(inStream, outStream, shouldShowMessages, true);
-				break;
-				case PPTX: converter = new PptxToPDFConverter(inStream, outStream, shouldShowMessages, true);
 				break;
 				case ODT: converter = new OdtToPDF(inStream, outStream, shouldShowMessages, true);
 				break;
