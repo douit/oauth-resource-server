@@ -271,7 +271,7 @@ public class AuthenticationServiceImpl {
 					}
 
 					Keycloak kc = Keycloak.getInstance("https://www.zdslogic.com/keycloak/auth", "zdslogic",
-							"richard.campion", "ArcyAdmin8246+", "admin-cli");
+							"richard.campion", "ChangeIt", "admin-cli");
 
 					// Get realm
 					RealmResource realmResource = kc.realm("zdslogic");
