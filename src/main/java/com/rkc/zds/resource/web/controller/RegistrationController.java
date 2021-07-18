@@ -25,7 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rkc.zds.resource.dto.LoginDto;
+import com.rkc.zds.resource.dto.LoginDTO;
 import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.service.impl.AuthenticationServiceImpl;

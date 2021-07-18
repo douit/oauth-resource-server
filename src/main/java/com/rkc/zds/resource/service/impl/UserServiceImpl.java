@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			tx = em.getTransaction();
 			tx.begin();
-			
+
 			userRepository.saveAndFlush(user);
 
 			tx.commit();
@@ -149,21 +149,8 @@ public class UserServiceImpl implements UserService {
 	public void deleteUser(int id) {
 
 		UserEntity user = null;
-		/*
-		 * // delete authorities for this user Optional<UserDto> userOptional =
-		 * userRepository.findById(id);
-		 * 
-		 * if (userOptional.isPresent()) { user = userOptional.get(); }
-		 * 
-		 * if (user != null) { Set<AuthorityDto> userAuthorities =
-		 * user.getAuthorities();
-		 * 
-		 * for (Iterator<AuthorityDto> iterator = userAuthorities.iterator();
-		 * iterator.hasNext();) { AuthorityDto authority = iterator.next();
-		 * authorityRepository.deleteById(authority.getId()); }
-		 * 
-		 * userRepository.deleteById(id); }
-		 */
+
+		Optional<UserEntity> userOptional = null;
 
 		EntityManagerFactory emf = getEntityManagerFactory();
 		EntityManager em = emf.createEntityManager();
@@ -173,6 +160,21 @@ public class UserServiceImpl implements UserService {
 		try {
 			tx = em.getTransaction();
 			tx.begin();
+
+			// delete authorities for this user Optional<UserDto> userOptional =
+			userOptional = userRepository.findById(id);
+
+			if (userOptional.isPresent()) {
+				user = userOptional.get();
+			}
+
+			if (user != null) {
+				List<AuthorityEntity> userAuthorities = user.getAuthorities();
+
+				for (AuthorityEntity authority : userAuthorities) {
+					authorityRepository.deleteById(authority.getId());
+				}
+			}
 
 			userRepository.deleteById(id);
 
@@ -204,7 +206,7 @@ public class UserServiceImpl implements UserService {
 		linkUsertoContact(user);
 
 		Keycloak kc = Keycloak.getInstance("https://www.zdslogic.com/keycloak/auth", "zdslogic", "richard.campion",
-				"ChangeIt+", "admin-cli");
+				"ArcyAdmin8246+", "admin-cli");
 
 		CredentialRepresentation credential = new CredentialRepresentation();
 		credential.setType(CredentialRepresentation.PASSWORD);

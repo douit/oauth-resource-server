@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rkc.zds.resource.dto.GroupMemberElementDto;
+import com.rkc.zds.resource.dto.GroupMemberElementDTO;
 import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.GroupMemberEntity;
 import com.rkc.zds.resource.service.ContactService;
@@ -37,19 +37,19 @@ public class GroupMemberController {
 	ContactService contactService;
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Page<GroupMemberElementDto>> getGroupMembers(@PathVariable int id, Pageable pageable,
+	public ResponseEntity<Page<GroupMemberElementDTO>> getGroupMembers(@PathVariable int id, Pageable pageable,
 			HttpServletRequest req) {
 		Page<GroupMemberEntity> groupMembersPage = groupMemberService.findGroupMembers(pageable, id);
 
 		List<GroupMemberEntity> contents = groupMembersPage.getContent();
-		List<GroupMemberElementDto> memberList = new ArrayList<GroupMemberElementDto>();
+		List<GroupMemberElementDTO> memberList = new ArrayList<GroupMemberElementDTO>();
 
 		ContactEntity contact;
 		for (GroupMemberEntity element : contents) {
 			contact = contactService.getContact(element.getContactId());
 			//ignore contacts that may have been deleted
 			if (contact != null) {
-				GroupMemberElementDto newElement = new GroupMemberElementDto();
+				GroupMemberElementDTO newElement = new GroupMemberElementDTO();
 				newElement.setId(element.getId());
 				newElement.setGroupId(element.getGroupId());
 				newElement.setContactId(contact.getId());
@@ -67,7 +67,7 @@ public class GroupMemberController {
 
 		PageRequest pageRequest = PageRequest.of(groupMembersPage.getNumber(), groupMembersPage.getSize());
 
-		PageImpl<GroupMemberElementDto> page = new PageImpl<GroupMemberElementDto>(memberList, pageRequest,
+		PageImpl<GroupMemberElementDTO> page = new PageImpl<GroupMemberElementDTO>(memberList, pageRequest,
 				groupMembersPage.getTotalElements());
 
 		return new ResponseEntity<>(page, HttpStatus.OK);

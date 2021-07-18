@@ -25,11 +25,13 @@ import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.EMailEntity;
 import com.rkc.zds.resource.entity.GroupMemberEntity;
 import com.rkc.zds.resource.entity.PhoneEntity;
+import com.rkc.zds.resource.entity.WebsiteEntity;
 import com.rkc.zds.resource.repository.AddressRepository;
 import com.rkc.zds.resource.repository.ContactRepository;
 import com.rkc.zds.resource.repository.EMailRepository;
 import com.rkc.zds.resource.repository.GroupMemberRepository;
 import com.rkc.zds.resource.repository.PhoneRepository;
+import com.rkc.zds.resource.repository.WebsiteRepository;
 import com.rkc.zds.resource.service.ContactService;
 import com.rkc.zds.resource.util.SearchCriteria;
 
@@ -59,6 +61,9 @@ public class ContactServiceImpl implements ContactService {
 
 	@Autowired
 	private AddressRepository addressRepo;
+	
+	@Autowired
+	private WebsiteRepository websiteRepo;
 
 	@Override
 	public List<ContactEntity> findAll() {
@@ -209,6 +214,12 @@ public class ContactServiceImpl implements ContactService {
 			List<PhoneEntity> phoneList = phoneRepo.findByContactId(id);
 			for (PhoneEntity phone : phoneList) {
 				phoneRepo.delete(phone);
+			}
+			
+			// delete the websites
+			List<WebsiteEntity> websiteList = websiteRepo.findByContactId(id);
+			for (WebsiteEntity website : websiteList) {
+				websiteRepo.delete(website);
 			}
 
 			// delete the contact

@@ -41,8 +41,8 @@ public class SsoController {
 		// createDefaultAccount();
 
 		// fixUserContacts();
-
-		return authenticationService.authenticateViaSSO(request, response);
+		UserEntity result = authenticationService.authenticateViaSSO(request, response);
+		return result; 
 	}
 
 	@RequestMapping(value = "/sso/getuser", method = RequestMethod.POST)

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rkc.zds.resource.dto.UserContactElementDto;
+import com.rkc.zds.resource.dto.UserContactElementDTO;
 import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.UserContactEntity;
 import com.rkc.zds.resource.entity.UserEntity;
@@ -150,21 +150,21 @@ public class UserContactsController {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Page<UserContactElementDto>> getUserContacts(@PathVariable int id, Pageable pageable,
+	public ResponseEntity<Page<UserContactElementDTO>> getUserContacts(@PathVariable int id, Pageable pageable,
 			HttpServletRequest req) {
 		
 		Page<UserContactEntity> userContactsPage = userContactsService.findUserContacts(pageable, id);
 
 		List<UserContactEntity> userContactList = userContactsPage.getContent();
 		
-		List<UserContactElementDto> userContactDtoList = new ArrayList<UserContactElementDto>();
+		List<UserContactElementDTO> userContactDtoList = new ArrayList<UserContactElementDTO>();
 
 		ContactEntity contact;
 		for (UserContactEntity userContact : userContactList) {
 			contact = contactService.getContact(userContact.getContactId());
 			// ignore contacts that may have been deleted
 			if (contact != null) {
-				UserContactElementDto newUserContact = new UserContactElementDto();
+				UserContactElementDTO newUserContact = new UserContactElementDTO();
 				newUserContact.setId(userContact.getId());				
 				newUserContact.setUserId(userContact.getUserId());
 				newUserContact.setContactId(contact.getId());
@@ -210,7 +210,7 @@ public class UserContactsController {
 
 		PageRequest pageRequest = PageRequest.of(userContactsPage.getNumber(), userContactsPage.getSize());
 
-		PageImpl<UserContactElementDto> page = new PageImpl<UserContactElementDto>(userContactDtoList, pageRequest,
+		PageImpl<UserContactElementDTO> page = new PageImpl<UserContactElementDTO>(userContactDtoList, pageRequest,
 				userContactsPage.getTotalElements());
 
 		return new ResponseEntity<>(page, HttpStatus.OK);

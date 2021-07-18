@@ -28,7 +28,8 @@ public class JobEntity implements Serializable {
 
 	@Id
 	@Column(name = "ID")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	//@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
 	private Integer jobId;
 
 	@Column(name = "USER_ID")
@@ -38,10 +39,10 @@ public class JobEntity implements Serializable {
 	private int contactId;
 		
 	@Column(name="CREATED_AT")	
-	private Timestamp createdAt;
+	private String createdAt;
 	
 	@Column(name="UPDATED_AT")	
-	private Timestamp updatedAt;
+	private String updatedAt;
 	
 	@Column(name="JOB_TITLE")	
 	private String jobTitle;
@@ -85,21 +86,22 @@ public class JobEntity implements Serializable {
 		this.contactId = contactId;
 	}
 	
-	public Timestamp getCreatedAt() {
+	public String getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Timestamp createdAt) {
+	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Timestamp getUpdatedAt() {
+	public String getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(Timestamp updatedAt) {
+	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+	
 	public String getJobTitle() {
 		return jobTitle;
 	}

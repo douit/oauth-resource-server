@@ -23,13 +23,25 @@ public class ContactEntity implements java.io.Serializable {
 	
 	@Column(name = "USER_ID")	
 	private Integer userId;
+	
+	@Column(name="CREATED_AT")	
+	private String createdAt;
+	
+	@Column(name="UPDATED_AT")	
+	private String updatedAt;	
 
 	@Column(name = "FIRSTNAME", nullable = false, length = 100)
 	private String firstName;
 
 	@Column(name = "LASTNAME", nullable = false, length = 100)
 	private String lastName;
-
+	
+	@Column(name = "GENDER", length = 25)
+	private String gender;
+	
+	@Column(name="BIRTH_DATE")	
+	private String birthdate;		
+	
 	@Column(name = "TITLE", length = 100)
 	private String title;
 
@@ -90,6 +102,22 @@ public class ContactEntity implements java.io.Serializable {
 		this.id = id;
 	}
 
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 	public Integer getUserId() {
 		return userId;
 	}
@@ -112,6 +140,22 @@ public class ContactEntity implements java.io.Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getBirthdate() {
+		return birthdate;
+	}
+
+	public void setBirthdate(String birthdate) {
+		this.birthdate = birthdate;
 	}
 
 	public String getTitle() {
