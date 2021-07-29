@@ -161,7 +161,6 @@ public class UserServiceImpl implements UserService {
 			tx = em.getTransaction();
 			tx.begin();
 
-			// delete authorities for this user Optional<UserDto> userOptional =
 			userOptional = userRepository.findById(id);
 
 			if (userOptional.isPresent()) {
@@ -171,11 +170,23 @@ public class UserServiceImpl implements UserService {
 			if (user != null) {
 				List<AuthorityEntity> userAuthorities = user.getAuthorities();
 
+				// delete authorities for this user
 				for (AuthorityEntity authority : userAuthorities) {
 					authorityRepository.deleteById(authority.getId());
 				}
+				
+				// delete resumes for this user
+				
+				// delete 
+				//			articles, 
+				//			article comments,
+				//			article favorites,
+				//			article follows,
+				
 			}
-
+			
+			
+				
 			userRepository.deleteById(id);
 
 			tx.commit();

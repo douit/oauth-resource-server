@@ -46,6 +46,9 @@ public class AddressEntity implements Serializable {
 	@Column(name="ADDRESS_STATE")
 	private String addressState;	
 
+	@Column(name="ADDRESS_COUNTRY")
+	private String addressCountry;	
+	
 	@Column(name="ADDRESS_ZIP")
 	private String addressZip;
 	
@@ -98,6 +101,14 @@ public class AddressEntity implements Serializable {
 
 	public void setAddressState(String addressState) {
 		this.addressState = addressState;
+	}
+
+	public String getAddressCountry() {
+		return addressCountry;
+	}
+
+	public void setAddressCountry(String addressCountry) {
+		this.addressCountry = addressCountry;
 	}
 
 	public String getAddressZip() {

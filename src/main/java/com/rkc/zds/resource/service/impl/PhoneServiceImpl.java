@@ -40,7 +40,7 @@ public class PhoneServiceImpl implements PhoneService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void savePhone(PhoneEntity phone) {
 
 		EntityManagerFactory emf = getEntityManagerFactory();
@@ -61,7 +61,7 @@ public class PhoneServiceImpl implements PhoneService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updatePhone(PhoneEntity phone) {
 
 		EntityManagerFactory emf = getEntityManagerFactory();

@@ -40,7 +40,7 @@ public class WebsiteServiceImpl implements WebsiteService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void saveWebsite(WebsiteEntity website) {
 
 		EntityManagerFactory emf = getEntityManagerFactory();
@@ -61,7 +61,7 @@ public class WebsiteServiceImpl implements WebsiteService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updateWebsite(WebsiteEntity website) {
 
 		EntityManagerFactory emf = getEntityManagerFactory();

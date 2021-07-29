@@ -24,16 +24,22 @@ public class ContactEntity implements java.io.Serializable {
 	@Column(name = "USER_ID")	
 	private Integer userId;
 	
+	@Column(name = "OWNER_ID")	
+	private Integer ownerId;	
+	
 	@Column(name="CREATED_AT")	
 	private String createdAt;
 	
 	@Column(name="UPDATED_AT")	
 	private String updatedAt;	
 
-	@Column(name = "FIRSTNAME", nullable = false, length = 100)
+	@Column(name = "FULLNAME", length = 225)
+	private String fullName;
+	
+	@Column(name = "FIRSTNAME", nullable = false, length = 225)
 	private String firstName;
 
-	@Column(name = "LASTNAME", nullable = false, length = 100)
+	@Column(name = "LASTNAME", nullable = false, length = 225)
 	private String lastName;
 	
 	@Column(name = "GENDER", length = 25)
@@ -42,31 +48,31 @@ public class ContactEntity implements java.io.Serializable {
 	@Column(name="BIRTH_DATE")	
 	private String birthdate;		
 	
-	@Column(name = "TITLE", length = 100)
+	@Column(name = "TITLE", length = 225)
 	private String title;
 
-	@Column(name = "COMPANY", length = 100)
+	@Column(name = "COMPANY", length = 225)
 	private String company;
 	
-	@Column(name = "IMAGE_URL", length = 100)
+	@Column(name = "IMAGE_URL", length = 225)
 	private String imageURL;
 
-	@Column(name = "LINKEDIN", length = 100)
+	@Column(name = "LINKEDIN", length = 225)
 	private String linkedin;
 
-	@Column(name = "FACEBOOK", length = 100)
+	@Column(name = "FACEBOOK", length = 225)
 	private String facebook;
 	
-	@Column(name = "SKYPE", length = 100)
+	@Column(name = "SKYPE", length = 225)
 	private String skype;
 
-	@Column(name = "TWITTER", length = 100)
+	@Column(name = "TWITTER", length = 225)
 	private String twitter;
 
-	@Column(name = "NOTES", length = 100)
+	@Column(name = "NOTES", length = 225)
 	private String notes;
 	
-	@Column(name = "PRESENCE_IMAGE_URL", length = 100)
+	@Column(name = "PRESENCE_IMAGE_URL", length = 225)
 	private String presenceImageUrl;
 	
 	@Column(name="ENABLED")	
@@ -101,6 +107,22 @@ public class ContactEntity implements java.io.Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+	
+	public Integer getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Integer ownerId) {
+		this.ownerId = ownerId;
+	}
 
 	public String getCreatedAt() {
 		return createdAt;
@@ -118,12 +140,14 @@ public class ContactEntity implements java.io.Serializable {
 		this.updatedAt = updatedAt;
 	}
 
-	public Integer getUserId() {
-		return userId;
+
+
+	public String getFullName() {
+		return fullName;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
 	public String getFirstName() {

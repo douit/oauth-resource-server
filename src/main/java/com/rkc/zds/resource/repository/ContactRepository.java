@@ -10,7 +10,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.rkc.zds.resource.entity.ContactEntity;
 
 public interface ContactRepository extends JpaRepository<ContactEntity, Integer>, JpaSpecificationExecutor<ContactEntity> {
-  
+
+	Page<ContactEntity> findByFullNameIgnoreCaseLike(Pageable pageable, String fullName);
+	
 	Page<ContactEntity> findByLastNameIgnoreCaseLike(Pageable pageable, String lastName);
 	
 	List<ContactEntity> findByLastNameIgnoreCaseLikeAndFirstNameIgnoreCaseLike(String lastName, String firstName);

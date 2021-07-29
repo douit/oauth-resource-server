@@ -49,7 +49,7 @@ public class PcmEMailServiceImpl implements PcmEMailService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void saveEMail(EMailEntity email) {
 		
 		EntityManagerFactory emf = getEntityManagerFactory();
@@ -68,7 +68,7 @@ public class PcmEMailServiceImpl implements PcmEMailService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updateEMail(EMailEntity email) {
 
 		EntityManagerFactory emf = getEntityManagerFactory();

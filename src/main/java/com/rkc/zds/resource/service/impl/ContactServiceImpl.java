@@ -125,7 +125,7 @@ public class ContactServiceImpl implements ContactService {
 	}
 
 	@Override
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updateContact(ContactEntity contact) {
 		EntityManagerFactory emf = getEntityManagerFactory();
 		EntityManager em = emf.createEntityManager();
@@ -143,6 +143,14 @@ public class ContactServiceImpl implements ContactService {
 		}
 	}
 
+	@Override
+	public Page<ContactEntity> searchContactsByFullName(String fullName) {
+
+		final PageRequest pageRequest = PageRequest.of(0, 10, sortByNameASC());
+
+		return contactRepo.findByFullNameIgnoreCaseLike(pageRequest, "%" + fullName + "%");
+	}
+	
 	@Override
 	public Page<ContactEntity> searchContactsByLastName(String lastName) {
 
@@ -186,7 +194,7 @@ public class ContactServiceImpl implements ContactService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteContact(int id) {
 
 		EntityManagerFactory emf = getEntityManagerFactory();

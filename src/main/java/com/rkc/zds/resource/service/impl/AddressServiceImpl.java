@@ -48,7 +48,7 @@ public class AddressServiceImpl implements AddressService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void saveAddress(AddressEntity address) {
 
 		EntityManagerFactory emf = getEntityManagerFactory();
@@ -69,7 +69,7 @@ public class AddressServiceImpl implements AddressService {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updateAddress(AddressEntity address) {
 
 		EntityManagerFactory emf = getEntityManagerFactory();

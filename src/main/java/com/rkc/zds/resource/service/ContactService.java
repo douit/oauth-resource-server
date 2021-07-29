@@ -21,6 +21,8 @@ public interface ContactService {
     
     Page<ContactEntity> findContacts(Pageable pageable);
 
+    Page<ContactEntity> searchContactsByFullName(String fullName);
+    
     Page<ContactEntity> searchContactsByLastName(String lastName);
     
     List<ContactEntity> searchContactsByLastNameAndFirstName(String lastName, String firsttName);
