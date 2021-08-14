@@ -23,7 +23,7 @@ import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-//import com.rkc.zds.resource.model.FileData;
+//import com.rkc.zds.dashboard.pcm.model.FileData;
 
 /*
 @Entity(name = "Post")

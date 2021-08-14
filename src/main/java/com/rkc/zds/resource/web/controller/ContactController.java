@@ -1,18 +1,29 @@
 package com.rkc.zds.resource.web.controller;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,20 +40,25 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.CharMatcher;
+import com.opencsv.CSVReader;
 import com.rkc.zds.resource.dto.UserContactElementDTO;
 import com.rkc.zds.resource.entity.AddressEntity;
 import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.EMailEntity;
 import com.rkc.zds.resource.entity.PhoneEntity;
+import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.entity.WebsiteEntity;
 
 import com.rkc.zds.resource.model.EMailSend;
@@ -50,8 +66,10 @@ import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
 import com.rkc.zds.resource.service.ContactService;
 import com.rkc.zds.resource.service.PcmEMailService;
 import com.rkc.zds.resource.service.PhoneService;
+import com.rkc.zds.resource.service.UserService;
 import com.rkc.zds.resource.service.AddressService;
 import com.rkc.zds.resource.service.WebsiteService;
+import com.rkc.zds.resource.service.impl.FileStorageServiceImpl;
 
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
@@ -62,11 +80,17 @@ import cz.jirutka.rsql.parser.ast.Node;
 // @PreAuthorize("isAuthenticated()") 
 public class ContactController {
 
-	final static Logger LOG = LoggerFactory.getLogger(ContactController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
 
 	private static final String DEFAULT_PAGE_DISPLAYED_TO_USER = "0";
 
 	private int contactId = 0;
+	
+    @Autowired
+    private FileStorageServiceImpl fileStorageService;	
+	
+	@Autowired
+	UserService userService;	
 
 	@Autowired
 	ContactService contactService;
@@ -499,16 +523,16 @@ public class ContactController {
 		}
 
 		Timestamp stamp = new Timestamp(new Date().getTime());
-		
-		//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy MM dd HH.mm.ss");
-		//SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
+		// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy MM dd HH.mm.ss");
+		// SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		// This is the format Angular needs
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		String dateString  = dateFormat.format(stamp);
-		
+		String dateString = dateFormat.format(stamp);
+
 		contactDTO.setCreatedAt(dateString);
 		contactDTO.setUpdatedAt(dateString);
-		
+
 		ContactEntity dto = contactService.saveContact(contactDTO);
 		this.contactId = dto.getId();
 		// post();
@@ -542,16 +566,16 @@ public class ContactController {
 		}
 
 		Timestamp stamp = new Timestamp(new Date().getTime());
-		
-		//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy MM dd HH.mm.ss");
-		//SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
+		// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy MM dd HH.mm.ss");
+		// SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		// This is the format Angular needs
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		String dateString  = dateFormat.format(stamp);
-		
-		//contactDTO.setCreatedAt(dateString);
+		String dateString = dateFormat.format(stamp);
+
+		// contactDTO.setCreatedAt(dateString);
 		contactDTO.setUpdatedAt(dateString);
-		
+
 		contactService.updateContact(contactDTO);
 
 	}
@@ -575,6 +599,338 @@ public class ContactController {
 		return post;
 	}
 
+	@RequestMapping(value = "/updateContactsDates", method = RequestMethod.GET)
+	public void updateContactsDates() {
+		
+		String myDate = "2014/01/01 12:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = null;
+		try {
+			date = sdf.parse(myDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		long millis = date.getTime();
+		Timestamp stamp = new Timestamp(millis);
+		
+		// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy MM dd HH.mm.ss");
+		// SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		// This is the format Angular needs
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		String dateString = dateFormat.format(stamp);
+
+		List<ContactEntity> list = contactService.findAll();
+		
+		for(ContactEntity contactDTO:list) {
+			contactDTO.setCreatedAt(dateString);
+			contactDTO.setUpdatedAt(dateString);
+
+			ContactEntity contact = contactService.saveContact(contactDTO);	
+			
+		}
+		System.out.println("updateContactsDates:Done");
+	}
+
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/updateFullNameRunner", method = RequestMethod.GET)
+	public void updateFullName() {
+
+		PopulateFullNameRunner populateRunner = new PopulateFullNameRunner(this.contactService);
+
+		Thread thread1 = new Thread(populateRunner);
+		thread1.start();
+
+	}
+
+	@PostMapping("/updateMyContactsFromFLinkedIn")
+	public void updateMyContactsFromFLinkedIn(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam("file") MultipartFile file) {
+
+		KeycloakAuthenticationToken token = (KeycloakAuthenticationToken) request.getUserPrincipal();
+		KeycloakPrincipal<?> principal = (KeycloakPrincipal) token.getPrincipal();
+		KeycloakSecurityContext session = principal.getKeycloakSecurityContext();
+		AccessToken accessToken = session.getToken();
+		String userName = accessToken.getPreferredUsername();
+
+		UserEntity user = userService.findByUserName(userName);
+
+		String fileName = fileStorageService.storeFile(request, file);
+
+		String filePrefix = "/_/servers/www/www.zdslogic.com/html/data/files/uploads/";
+
+		String fullFileName = filePrefix + fileName;
+
+		int rowCount = 0;
+
+		try {
+
+			BufferedReader reader = new BufferedReader(new FileReader(fullFileName), 65536);
+
+			String lineIn = null;
+
+			String[] lineInArray;
+
+			String id = "";
+			String fullName = "";
+			String firstName = "";
+			String lastName = "";
+			String email = "";
+			String phoneNumber = "";
+			String linkedIn = "";
+			String title = "";
+			String company = "";
+			String companyPhone = "";
+			String website1 = "";
+			String website2 = "";
+			String facebook = "";
+			String twitter = "";
+			String website3 = "";
+			String country = "";
+			String city = "";
+			boolean inBounds;
+			int index = 0;
+
+			String test = "";
+			boolean isAscii = false;
+
+			// skip over first n line(s)
+			// lineInArray = reader.readNext();
+			// readWriteFileAccess.seek(lastKnownPosition);
+			// lineIn = readWriteFileAccess.readLine();
+			for (int i = 0; i < 4; i++) {
+				lineIn = reader.readLine();
+			}
+
+			String originalStr = "";
+			while ((lineIn = reader.readLine()) != null) {
+
+				//lineInArray = lineIn.split(",");
+				lineInArray = lineIn.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+
+				if (lineInArray.length == 6) {
+					if (0 < lineInArray.length) {
+						firstName = lineInArray[0];
+						originalStr = firstName;
+						if (originalStr.startsWith("\"")) {
+							originalStr = originalStr.substring(1, originalStr.length());
+						}
+						if (originalStr.endsWith("\"")) {
+							originalStr = originalStr.substring(0, originalStr.length() - 1);
+						}
+						if (firstName.contains("null"))
+							firstName = "";
+						else
+							firstName = originalStr.trim();
+					}
+
+					if (1 < lineInArray.length) {
+						lastName = lineInArray[1];
+						originalStr = lastName;
+						if (originalStr.startsWith("\"")) {
+							originalStr = originalStr.substring(1, originalStr.length());
+						}
+						if (originalStr.endsWith("\"")) {
+							originalStr = originalStr.substring(0, originalStr.length() - 1);
+						}
+						if (lastName.contains("null"))
+							lastName = "";
+						else
+							lastName = originalStr.trim();
+					}
+
+					if (2 < lineInArray.length) {
+						email = lineInArray[2];
+						originalStr = email;
+						if (originalStr.startsWith("\"")) {
+							originalStr = originalStr.substring(1, originalStr.length());
+						}
+						if (originalStr.endsWith("\"")) {
+							originalStr = originalStr.substring(0, originalStr.length() - 1);
+						}
+						if (email.contains("null"))
+							email = "";
+						else
+							email = originalStr.trim();
+					}
+
+					if (3 < lineInArray.length) {
+						company = lineInArray[3];
+						originalStr = company;
+						if (originalStr.startsWith("\"")) {
+							originalStr = originalStr.substring(1, originalStr.length());
+						}
+						if (originalStr.endsWith("\"")) {
+							originalStr = originalStr.substring(0, originalStr.length() - 1);
+						}
+						if (company.contains("null"))
+							company = "";
+						else
+							company = originalStr.trim();
+					}
+
+					if (4 < lineInArray.length) {
+						title = lineInArray[4];
+						originalStr = title;
+						if (originalStr.startsWith("\"")) {
+							originalStr = originalStr.substring(1, originalStr.length());
+						}
+						if (originalStr.endsWith("\"")) {
+							originalStr = originalStr.substring(0, originalStr.length() - 1);
+						}
+						if (title.contains("null"))
+							title = "";
+						else
+							title = originalStr.trim();
+					}
+
+					fullName = firstName + " " + lastName;
+
+					logger.info(id + "," + fullName + "," + email + "," + phoneNumber + "," + linkedIn + "," + title
+							+ "," + company + "," + companyPhone + "," + website1 + "," + website2 + "," + facebook
+							+ "," + twitter + "," + website3 + "," + country + "," + city);
+
+					test = firstName + ", " + lastName;
+
+					isAscii = CharMatcher.ascii().matchesAllOf(test);
+
+					if (lastName.equalsIgnoreCase("Forand")) {
+						System.out.println(firstName + " " + lastName);
+					}
+
+					if (isAscii) {
+						// System.out.println("firstname:" + firstName + " lastName:" + lastName);
+						System.out.println(id + ", " + firstName + ", " + lastName);
+
+						List<ContactEntity> list = contactService.searchContactsByLastNameAndFirstName(lastName,
+								firstName);
+
+						if (list.size() == 0) {
+							ContactEntity contactDTO = new ContactEntity();
+							contactDTO.setCompany(company);
+							contactDTO.setEnabled(1);
+
+							contactDTO.setFacebook(facebook);
+							contactDTO.setFirstName(firstName);
+							contactDTO.setFullName(firstName + " " + lastName);
+							// contactDTO.setId(null)
+							contactDTO.setImageURL("https://www.zdslogic.com/download/user.png");
+							contactDTO.setLastName(lastName);
+							contactDTO.setLinkedin(linkedIn);
+							contactDTO.setNotes("");
+							contactDTO.setOwnerId(user.getId());
+							contactDTO.setPresenceImageUrl("");
+							contactDTO.setSkype("");
+							contactDTO.setTitle(title);
+							contactDTO.setTwitter(twitter);
+							contactDTO.setUserId(0);
+
+							Timestamp stamp = new Timestamp(new Date().getTime());
+
+							// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy MM dd HH.mm.ss");
+							// SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+							// This is the format Angular needs
+							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+							String dateString = dateFormat.format(stamp);
+
+							contactDTO.setCreatedAt(dateString);
+							contactDTO.setUpdatedAt(dateString);
+
+							ContactEntity contact = contactService.saveContact(contactDTO);
+
+						} else if (list.size() == 1) {
+
+							ContactEntity contact = list.get(0);
+
+							contact.setCompany(company);
+							contact.setTitle(title);
+
+							Timestamp stamp = new Timestamp(new Date().getTime());
+
+							// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy MM dd HH.mm.ss");
+							// SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+							// This is the format Angular needs
+							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+							String dateString = dateFormat.format(stamp);
+
+							// contact.setCreatedAt(dateString);
+							contact.setUpdatedAt(dateString);
+
+							contactService.updateContact(contact);
+
+						}
+
+						rowCount++;
+					}
+				} else {
+					logger.info(lineIn);
+				}
+			}
+
+		} catch (IndexOutOfBoundsException e) {
+			// Output expected IndexOutOfBoundsExceptions.
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		logger.info("rowCount:" + rowCount);
+	}
+		
+    
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/updateContactsFromLinkedIn", method = RequestMethod.GET)
+	public void updateContactsFromLinkedIn() {
+
+		PopulateLinkedinDataRunner populateRunner = new PopulateLinkedinDataRunner(this.contactService,
+
+				this.emailService,
+
+				this.phoneService,
+
+				this.addressService,
+
+				this.websiteService);
+
+		Thread thread5 = new Thread(populateRunner);
+		thread5.start();
+
+	}
+	
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/updateFullName", method = RequestMethod.GET)
+	public void setFullName() {
+
+		List<ContactEntity> contacts = contactService.findAll();
+		for (ContactEntity entity : contacts) {
+
+			entity.setFullName(entity.getFirstName() + " " + entity.getLastName());
+
+			ContactEntity dto = contactService.saveContact(entity);
+		}
+
+		System.out.println("setFullName: Done");
+	}
+
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/updateOwnerId", method = RequestMethod.GET)
+	public void updateOwnerId() {
+
+		List<ContactEntity> contacts = contactService.findAll();
+		for (ContactEntity entity : contacts) {
+
+			entity.setOwnerId(41);
+
+			ContactEntity dto = contactService.saveContact(entity);
+		}
+
+		System.out.println("setFullName: Done");
+	}
+	
 	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/updateContactsFromFacebook", method = RequestMethod.GET)
 	public void updateContactsFromFacebook() {
@@ -636,6 +992,7 @@ public class ContactController {
 					contactDTO.setEnabled(1);
 					contactDTO.setFacebook("");
 					contactDTO.setFirstName(firstName);
+					contactDTO.setFullName(name);
 					// contactDTO.setId(null)
 					contactDTO.setImageURL("https://www.zdslogic.com/download/user.png");
 					contactDTO.setLastName(lastName);
