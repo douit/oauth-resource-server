@@ -194,7 +194,7 @@ public class ContactServiceImpl implements ContactService {
 	}
 
 	@Override
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteContact(int id) {
 
 		EntityManagerFactory emf = getEntityManagerFactory();
