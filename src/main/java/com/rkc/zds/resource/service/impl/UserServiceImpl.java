@@ -276,12 +276,13 @@ public class UserServiceImpl implements UserService {
 		} else if (contacts.size() == 0) {
 
 			ContactEntity contact = new ContactEntity();
-
+			contact.setFullName(user.getFirstName() + " " + user.getLastName());
 			contact.setFirstName(user.getFirstName());
 			contact.setLastName(user.getLastName());
 			contact.setCompany("Unknown");
 			contact.setTitle("Unknown");
 			contact.setUserId(user.getId());
+			contact.setEnabled(1);
 
 			contact = contactRepository.save(contact);
 

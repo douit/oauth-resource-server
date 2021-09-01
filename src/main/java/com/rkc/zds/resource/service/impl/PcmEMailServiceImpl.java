@@ -124,7 +124,7 @@ public class PcmEMailServiceImpl implements PcmEMailService {
 		try {
 			String[] array = emailSend.getEmailList().split(",");
 			smtpMailSender.postMail(array, emailSend.getEmailSubjectTxt(), emailSend.getEmailMsgTxt(),
-					emailSend.getEmailFromAddress());
+					emailSend.getEmailFromAddress(), emailSend.getEmailFiles());
 
 		} catch (MessagingException e) {
 			e.printStackTrace();

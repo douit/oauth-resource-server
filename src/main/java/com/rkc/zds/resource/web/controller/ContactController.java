@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,6 +64,7 @@ import com.rkc.zds.resource.entity.WebsiteEntity;
 
 import com.rkc.zds.resource.model.EMailSend;
 import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
+
 import com.rkc.zds.resource.service.ContactService;
 import com.rkc.zds.resource.service.PcmEMailService;
 import com.rkc.zds.resource.service.PhoneService;
@@ -80,17 +82,17 @@ import cz.jirutka.rsql.parser.ast.Node;
 // @PreAuthorize("isAuthenticated()") 
 public class ContactController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
 
 	private static final String DEFAULT_PAGE_DISPLAYED_TO_USER = "0";
 
 	private int contactId = 0;
-	
-    @Autowired
-    private FileStorageServiceImpl fileStorageService;	
-	
+
 	@Autowired
-	UserService userService;	
+	private FileStorageServiceImpl fileStorageService;
+
+	@Autowired
+	UserService userService;
 
 	@Autowired
 	ContactService contactService;
@@ -211,7 +213,7 @@ public class ContactController {
 		emailService.updateEMail(email);
 
 	}
-
+/*
 	@RequestMapping(value = "/email/send", method = RequestMethod.POST, consumes = {
 			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
 	public void sendEmail(@RequestBody String jsonString) {
@@ -234,10 +236,10 @@ public class ContactController {
 
 		emailService.sendEMail(emailSend);
 	}
-
-	@RequestMapping(value = "/email/system/send", method = RequestMethod.POST, consumes = {
-			"application/json;charset=UTF-8" }, produces = { "application/json;charset=UTF-8" })
-	public void sendSystemEmailToContacts(@RequestBody String jsonString) {
+*/
+	@PostMapping(value = "/email/send", consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.MULTIPART_FORM_DATA_VALUE })
+	public void sendEmail(@RequestPart("jsonString") String jsonString, @RequestPart("file") List<MultipartFile> file) {
 
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -254,6 +256,34 @@ public class ContactController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		emailSend.setEmailFiles(file);
+
+		emailService.sendEMail(emailSend);
+
+	}
+
+	@PostMapping(value = "/email/system/send", consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.MULTIPART_FORM_DATA_VALUE })
+	public void sendSystemEmailToContacts(@RequestPart("jsonString") String jsonString, @RequestPart("file") List<MultipartFile> file) {
+	
+		ObjectMapper mapper = new ObjectMapper();
+
+		EMailSend emailSend = new EMailSend();
+		try {
+			emailSend = mapper.readValue(jsonString, EMailSend.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		emailSend.setEmailFiles(file);
 
 		List<ContactEntity> contactList = contactService.findAll();
 
@@ -601,7 +631,7 @@ public class ContactController {
 
 	@RequestMapping(value = "/updateContactsDates", method = RequestMethod.GET)
 	public void updateContactsDates() {
-		
+
 		String myDate = "2014/01/01 12:00:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = null;
@@ -613,7 +643,7 @@ public class ContactController {
 		}
 		long millis = date.getTime();
 		Timestamp stamp = new Timestamp(millis);
-		
+
 		// SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy MM dd HH.mm.ss");
 		// SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		// This is the format Angular needs
@@ -621,13 +651,13 @@ public class ContactController {
 		String dateString = dateFormat.format(stamp);
 
 		List<ContactEntity> list = contactService.findAll();
-		
-		for(ContactEntity contactDTO:list) {
+
+		for (ContactEntity contactDTO : list) {
 			contactDTO.setCreatedAt(dateString);
 			contactDTO.setUpdatedAt(dateString);
 
-			ContactEntity contact = contactService.saveContact(contactDTO);	
-			
+			ContactEntity contact = contactService.saveContact(contactDTO);
+
 		}
 		System.out.println("updateContactsDates:Done");
 	}
@@ -705,7 +735,7 @@ public class ContactController {
 			String originalStr = "";
 			while ((lineIn = reader.readLine()) != null) {
 
-				//lineInArray = lineIn.split(",");
+				// lineInArray = lineIn.split(",");
 				lineInArray = lineIn.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
 
 				if (lineInArray.length == 6) {
@@ -880,8 +910,7 @@ public class ContactController {
 
 		logger.info("rowCount:" + rowCount);
 	}
-		
-    
+
 	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/updateContactsFromLinkedIn", method = RequestMethod.GET)
 	public void updateContactsFromLinkedIn() {
@@ -900,7 +929,7 @@ public class ContactController {
 		thread5.start();
 
 	}
-	
+
 	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/updateFullName", method = RequestMethod.GET)
 	public void setFullName() {
@@ -930,7 +959,7 @@ public class ContactController {
 
 		System.out.println("setFullName: Done");
 	}
-	
+
 	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/updateContactsFromFacebook", method = RequestMethod.GET)
 	public void updateContactsFromFacebook() {

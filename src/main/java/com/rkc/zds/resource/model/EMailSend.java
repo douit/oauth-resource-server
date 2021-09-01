@@ -1,11 +1,16 @@
 package com.rkc.zds.resource.model;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 public class EMailSend {
 	  private String emailSubjectTxt = "Contact Request";
 	  private String emailList = "richard.campion@zdslogic.com";
 	  private String emailFirstName;
 	  private String emailFromAddress;
 	  private String emailMsgTxt;
+	  private List<MultipartFile> emailFiles;
 	  
 	public String getEmailSubjectTxt() {
 		return emailSubjectTxt;
@@ -37,6 +42,12 @@ public class EMailSend {
 	public void setEmailMsgTxt(String emailMsgTxt) {
 		this.emailMsgTxt = emailMsgTxt;
 	}
-	  
+	public List<MultipartFile> getEmailFiles() {
+		return emailFiles;
+	}
+	public void setEmailFiles(List<MultipartFile> emailFiles) {
+		this.emailFiles = emailFiles;
+	}
+
 
 }

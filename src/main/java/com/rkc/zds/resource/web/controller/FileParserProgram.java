@@ -53,10 +53,6 @@ import com.rkc.zds.resource.util.Converter;
 import com.rkc.zds.resource.util.DocToPDFConverter;
 import com.rkc.zds.resource.util.DocxToPDFConverter;
 import com.rkc.zds.resource.util.OdtToPDF;
-//import com.rkc.zds.resource.util.PptToPDFConverter;
-//import com.rkc.zds.resource.util.PptxToPDFConverter;
-//import com.rkc.zds.resource.util.MainClass.CommandLineValues;
-//import com.rkc.zds.resource.util.MainClass.DOC_TYPE;
 
 import gate.Annotation;
 import gate.AnnotationSet;

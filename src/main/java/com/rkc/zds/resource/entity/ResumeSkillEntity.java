@@ -42,7 +42,7 @@ public class ResumeSkillEntity implements java.io.Serializable {
 	
 	@Column(name = "SKILL_ID")
 	//@JsonProperty("skillId")
-	private Long skillId;
+	private Integer skillId;
  
 	@Column(name = "SKILL_NAME")
 	//@JsonProperty("skillId")
@@ -64,11 +64,11 @@ public class ResumeSkillEntity implements java.io.Serializable {
 		this.resumeId = resumeId;
 	}
 
-	public Long getSkillId() {
+	public Integer getSkillId() {
 		return skillId;
 	}
 
-	public void setSkillId(Long skillId) {
+	public void setSkillId(Integer skillId) {
 		this.skillId = skillId;
 	}
 

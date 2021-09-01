@@ -1,21 +1,11 @@
 package com.rkc.zds.resource.web.controller;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rkc.zds.resource.dto.LoginDTO;
-import com.rkc.zds.resource.dto.Profile;
-import com.rkc.zds.resource.entity.AuthorityEntity;
-import com.rkc.zds.resource.entity.ContactEntity;
-import com.rkc.zds.resource.entity.EMailEntity;
-import com.rkc.zds.resource.entity.GroupEntity;
-import com.rkc.zds.resource.entity.UserEntity;
-import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
-import com.rkc.zds.resource.service.UserService;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import cz.jirutka.rsql.parser.RSQLParser;
-import cz.jirutka.rsql.parser.ast.Node;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,15 +16,27 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rkc.zds.resource.dto.LoginDTO;
+import com.rkc.zds.resource.dto.Profile;
+import com.rkc.zds.resource.entity.AuthorityEntity;
+import com.rkc.zds.resource.entity.UserEntity;
+import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
+import com.rkc.zds.resource.service.UserService;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
 
 @CrossOrigin(origins = {"http://localhost:8089", "http://localhost:4200"})
 @RestController

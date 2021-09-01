@@ -18,16 +18,16 @@ public class SkillEntity {
 	@Id
 	@Column(name = "SKILL_ID")
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long skillId;
+	private Integer skillId;
 	
 	@Column(name="SKILL_NAME")	
 	private String skillName;
 
-	public Long getSkillId() {
+	public Integer getSkillId() {
 		return skillId;
 	}
 
-	public void setSkillId(Long skillId) {
+	public void setSkillId(Integer skillId) {
 		this.skillId = skillId;
 	}
 
