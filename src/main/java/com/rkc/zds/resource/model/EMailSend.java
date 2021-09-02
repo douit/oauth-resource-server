@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 public class EMailSend {
+	  private String emailId;
 	  private String emailSubjectTxt = "Contact Request";
 	  private String emailList = "richard.campion@zdslogic.com";
 	  private String emailFirstName;
@@ -12,6 +13,12 @@ public class EMailSend {
 	  private String emailMsgTxt;
 	  private List<MultipartFile> emailFiles;
 	  
+	public String getEmailId() {
+		return emailId;
+	}
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
 	public String getEmailSubjectTxt() {
 		return emailSubjectTxt;
 	}

@@ -1,15 +1,12 @@
 package com.rkc.zds.resource.web.controller;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -53,23 +49,21 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.CharMatcher;
-import com.opencsv.CSVReader;
-import com.rkc.zds.resource.dto.UserContactElementDTO;
 import com.rkc.zds.resource.entity.AddressEntity;
 import com.rkc.zds.resource.entity.ContactEntity;
 import com.rkc.zds.resource.entity.EMailEntity;
+import com.rkc.zds.resource.entity.GroupMemberEntity;
 import com.rkc.zds.resource.entity.PhoneEntity;
 import com.rkc.zds.resource.entity.UserEntity;
 import com.rkc.zds.resource.entity.WebsiteEntity;
-
 import com.rkc.zds.resource.model.EMailSend;
 import com.rkc.zds.resource.rsql.CustomRsqlVisitor;
-
+import com.rkc.zds.resource.service.AddressService;
 import com.rkc.zds.resource.service.ContactService;
+import com.rkc.zds.resource.service.GroupMemberService;
 import com.rkc.zds.resource.service.PcmEMailService;
 import com.rkc.zds.resource.service.PhoneService;
 import com.rkc.zds.resource.service.UserService;
-import com.rkc.zds.resource.service.AddressService;
 import com.rkc.zds.resource.service.WebsiteService;
 import com.rkc.zds.resource.service.impl.FileStorageServiceImpl;
 
@@ -96,6 +90,9 @@ public class ContactController {
 
 	@Autowired
 	ContactService contactService;
+	
+	@Autowired
+	GroupMemberService groupMemberService;	
 
 	@Autowired
 	PcmEMailService emailService;
@@ -305,6 +302,52 @@ public class ContactController {
 		}
 	}
 
+	@PostMapping(value = "/email/group/send", consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.MULTIPART_FORM_DATA_VALUE })
+	public void sendEmailToGroupMembers(@RequestPart("jsonString") String jsonString, @RequestPart("file") List<MultipartFile> file) {
+	
+		ObjectMapper mapper = new ObjectMapper();
+
+		EMailSend emailSend = new EMailSend();
+		try {
+			emailSend = mapper.readValue(jsonString, EMailSend.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		emailSend.setEmailFiles(file);
+		
+		int groupId = Integer.parseInt(emailSend.getEmailId());
+		
+		List<GroupMemberEntity> membersList =  groupMemberService.findAllMembers(groupId );
+
+		for (GroupMemberEntity member : membersList) {
+			
+			ContactEntity contact = contactService.getContact(member.getContactId());
+
+			if (contact.getEnabled() == 1) {
+
+				List<EMailEntity> emailList = emailService.findAllByContactId(contact.getId());
+
+				for (EMailEntity email : emailList) {
+
+					// EMailEntity temp = email.getEmail();
+					emailSend.setEmailList(email.getEmail());
+
+					emailService.sendEMail(emailSend);
+
+				}
+			}
+		}
+	}
+	
 	// Address
 	@RequestMapping(value = "/address/{contactId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Page<AddressEntity>> findAddresss(@PathVariable int contactId, Pageable pageable,
